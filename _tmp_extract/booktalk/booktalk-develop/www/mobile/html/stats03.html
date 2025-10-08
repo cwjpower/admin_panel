@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>BOOK talk</title>
+		<link rel="shortcut icon" href="favicon.ico">
+		<!-- css -->
+		<link rel="stylesheet" href="/mobile/css/jquery.mobile-1.4.5.css">
+		<link rel="stylesheet" href="/mobile/css/globals.css">
+		<link rel="stylesheet" href="/mobile/css/stats.css">
+		<!-- js -->
+		<script src="/includes/js/jquery.min.js"></script>
+		<script src="/includes/js/jquery.mobile-1.4.5.min.js"></script>
+	</head>
+	<body>
+		<!-- m-habit01 -->
+		<div data-role="page" id="m-habit01">
+			<!-- panel -->
+			<div data-role="panel" id="overlayPanel" data-display="overlay" data-position="right">
+				<div class="panel-area user-logout"><!-- display:none; -->
+					<div class="panel-header">
+						<h2>전체 메뉴 목록</h2>
+						<a href="#pageone" data-rel="close" class="btn-panel-close">Close</a>
+					</div>
+					<div class="panel-login-area">
+						<p class="login-txt">로그인이 필요합니다.</p>
+						<a class="btn-panel-login" href="#">로그인<span class="gnb_login"></span></a>
+					</div>
+					<div class="gnb-area">
+						<h3>서비스 메뉴</h3>
+						<ul class="gnb-menu">
+							<li><a href="#">공지사항</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">이벤트</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">무료도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">인기도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">추천도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">도서신청</a><span class="arrow">&gt;</span></li>
+						</ul>
+					</div>
+					<div class="panel-bottom">
+						<a class="service-center"><span class="icon-service"></span><span>고객센터</span></a>
+						<a class="advice"><span class="icon-advice"></span><span>건의사항</span></a>
+						<div class="btn-app"><a href="#">App 다운로드</a></div>
+					</div>
+				</div>
+				<div class="panel-area user-login"><!-- display:block; -->
+					<div class="panel-header">
+						<h2>전체 메뉴 목록</h2>
+						<a href="#pageone" data-rel="close" class="btn-panel-close">Close</a>
+					</div>
+					<div class="user-img-area">
+						<div class="user-img-bg">
+							<div class="user-img"><img src="../img/common/user_img.png" alt=""></div>
+						</div>
+						<div class="user-info">
+							<div class="user-id">사용자 아이디</div>
+							<div class="user-msg">프로필메세지</div>
+						</div>
+					</div>
+					<div class="s-menu-area">
+						<ul>
+							<li><a href="#">내 서재</a></li>
+							<li><a href="#">찜 목록</a></li>
+							<li><a href="#">장바구니</a></li>
+						</ul>	
+					</div>
+					<div class="my-pocket-area">
+						<h3>내 지갑</h3>
+						<ul class="pocket-list">
+							<li><strong>15,000</strong><span>캐시</span></li>
+							<li><strong>1,000</strong><span>포인트</span></li>
+							<li><strong>0</strong><span>쿠폰</span></li>
+							<li><strong>0</strong><span>대여권</span></li>
+						</ul>
+					</div>
+					<div class="readbooks-list">
+						<h3>최근 읽은 책</h3>
+						<!-- 읽은 책 없습니다. -->
+						<div class="opct-area">
+							<div class="opct">최근 읽은 책이 없습니다.</div>
+						</div>
+						<!-- 읽은 책 3권 보이기 -->
+						<ul class="view-book view3-book">
+							<li><a href="#"><img src="../img/book_img/book_sample01.jpg" alt="읽은 책 제목1"></a></li>
+							<li><a href="#"><img src="../img/book_img/book_sample01.jpg" alt="읽은 책 제목2"></a></li>
+							<li><a href="#"><img src="../img/book_img/book_sample01.jpg" alt="읽은 책 제목3"></a></li>
+						</ul>
+					</div>
+					<div class="my-page">
+						<h3>마이페이지</h3>
+						<ul>
+							<li><a href="#">개인정보수정</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">통계</a><span class="arrow">&gt;</span></li>
+						</ul>
+					</div>
+					<div class="gnb-area">
+						<h3>서비스 메뉴</h3>
+						<ul class="gnb-menu">
+							<li><a href="#">공지사항</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">이벤트</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">무료도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">인기도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">추천도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">도서신청</a><span class="arrow">&gt;</span></li>
+						</ul>
+					</div>
+					<div class="panel-bottom">
+						<a class="service-center"><span class="icon-service"></span><span>고객센터</span></a>
+						<a class="advice"><span class="icon-advice"></span><span>건의사항</span></a>
+						<div class="btn-app"><a href="#">App 다운로드</a></div>
+					</div>
+				</div>
+			</div>
+			<!-- panel End -->
+			<!-- header -->
+			<div data-role="header">
+				<!-- logo -->
+				<div class="header-top">
+					<div class="header-btn-left btn-forward"><a href="#" ></a></div>
+					<h1><a href="#"><img src="../img/common/logo.png" alt="BOOKtalk"></a></h1>
+					<div class="header-btn-right">
+						<span class="btn-search"></span>
+						 <a href="#overlayPanel" class="ui-btn-inline btn-panel"></a>
+					</div>
+				</div>
+				<!-- logo End -->
+			</div>
+			<!-- header End -->
+			<!-- main -->
+			<div data-role="main" class="ui-content stats-area">
+				<h2>통계 > 독서 습관</h2>
+				<div class="reading-habit-area">
+					<h3>책을 많이 읽은 시기</h3>
+					<ul class="habit-date-list">
+						<li>
+							<div class="habit-date-box">
+								<div class="reading-type-tit">시간</div>
+								<div class="reading-type-txt">
+									<span class="time-txt">20 : 00</span>
+									<span class="time-txt">-</span>
+									<span class="time-txt">22 : 00</span>
+								</div>
+							</div>
+							<div class="btn-habit-more"><a href="#m-habit01" class="ui-btn-active ui-state-persist" data-transition="none">자세히 보기</a></div>
+						</li>
+						<li>
+							<div class="habit-date-box">
+								<div class="reading-type-tit">요일</div>
+								<div class="reading-type-txt">
+									<div class="day-txt">일요일</div>
+								</div>
+							</div>
+							<div class="btn-habit-more"><a href="#m-habit02" data-transition="none">자세히 보기</a></div>
+						</li>
+						<li>
+							<div class="habit-date-box">
+								<div class="reading-type-tit">계절</div>
+								<div class="reading-type-txt">
+									<div class="season-txt winter">겨울</div>
+								</div>
+							</div>
+							<div class="btn-habit-more"><a href="#m-habit03" data-transition="none">자세히 보기</a></div>
+						</li>
+					</ul>
+					<!-- 시간별 -->
+					<div class="habit-cont-area">
+						<h3>시간별</h3>
+						<ul class="reading-time-list">
+							<li><span class="time-step">00:00 ~ 01:00</span>20권</li>
+							<li><span class="time-step">01:00 ~ 02:00</span></li>
+							<li><span class="time-step">02:00 ~ 03:00</span></li>
+							<li><span class="time-step">03:00 ~ 04:00</span></li>
+							<li><span class="time-step">04:00 ~ 05:00</span></li>
+							<li><span class="time-step">05:00 ~ 06:00</span></li>
+							<li><span class="time-step">06:00 ~ 07:00</span></li>
+							<li><span class="time-step">07:00 ~ 08:00</span></li>
+							<li><span class="time-step">08:00 ~ 09:00</span></li>
+							<li><span class="time-step">09:00 ~ 10:00</span></li>
+							<li><span class="time-step">10:00 ~ 11:00</span></li>
+							<li><span class="time-step">11:00 ~ 12:00</span></li>
+							<li><span class="time-step">12:00 ~ 13:00</span></li>
+							<li><span class="time-step">13:00 ~ 14:00</span></li>
+							<li><span class="time-step">14:00 ~ 15:00</span></li>
+							<li><span class="time-step">15:00 ~ 16:00</span></li>
+							<li><span class="time-step">16:00 ~ 17:00</span></li>
+							<li><span class="time-step">17:00 ~ 18:00</span></li>
+							<li><span class="time-step">18:00 ~ 19:00</span></li>
+							<li><span class="time-step">19:00 ~ 20:00</span></li>
+							<li><span class="time-step">20:00 ~ 21:00</span></li>
+							<li><span class="time-step">21:00 ~ 22:00</span></li>
+							<li><span class="time-step">22:00 ~ 23:00</span></li>
+							<li class="last-time"><span class="time-step">23:00 ~ 00:00</span></li>
+						</ul>
+					</div>
+					<!-- 시간별 End -->
+				</div>
+			</div>
+			<!-- main End -->
+		</div>
+		<!-- m-habit01 End -->
+		<!-- m-habit02 -->
+		<div data-role="page" id="m-habit02">
+			<!-- panel -->
+			<div data-role="panel" id="overlayPanel" data-display="overlay" data-position="right">
+				<div class="panel-area user-logout"><!-- display:none; -->
+					<div class="panel-header">
+						<h2>전체 메뉴 목록</h2>
+						<a href="#pageone" data-rel="close" class="btn-panel-close">Close</a>
+					</div>
+					<div class="panel-login-area">
+						<p class="login-txt">로그인이 필요합니다.</p>
+						<a class="btn-panel-login" href="#">로그인<span class="gnb_login"></span></a>
+					</div>
+					<div class="gnb-area">
+						<h3>서비스 메뉴</h3>
+						<ul class="gnb-menu">
+							<li><a href="#">공지사항</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">이벤트</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">무료도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">인기도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">추천도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">도서신청</a><span class="arrow">&gt;</span></li>
+						</ul>
+					</div>
+					<div class="panel-bottom">
+						<a class="service-center"><span class="icon-service"></span><span>고객센터</span></a>
+						<a class="advice"><span class="icon-advice"></span><span>건의사항</span></a>
+						<div class="btn-app"><a href="#">App 다운로드</a></div>
+					</div>
+				</div>
+				<div class="panel-area user-login"><!-- display:block; -->
+					<div class="panel-header">
+						<h2>전체 메뉴 목록</h2>
+						<a href="#pageone" data-rel="close" class="btn-panel-close">Close</a>
+					</div>
+					<div class="user-img-area">
+						<div class="user-img-bg">
+							<div class="user-img"><img src="../img/common/user_img.png" alt=""></div>
+						</div>
+						<div class="user-info">
+							<div class="user-id">사용자 아이디</div>
+							<div class="user-msg">프로필메세지</div>
+						</div>
+					</div>
+					<div class="s-menu-area">
+						<ul>
+							<li><a href="#">내 서재</a></li>
+							<li><a href="#">찜 목록</a></li>
+							<li><a href="#">장바구니</a></li>
+						</ul>	
+					</div>
+					<div class="my-pocket-area">
+						<h3>내 지갑</h3>
+						<ul class="pocket-list">
+							<li><strong>15,000</strong><span>캐시</span></li>
+							<li><strong>1,000</strong><span>포인트</span></li>
+							<li><strong>0</strong><span>쿠폰</span></li>
+							<li><strong>0</strong><span>대여권</span></li>
+						</ul>
+					</div>
+					<div class="readbooks-list">
+						<h3>최근 읽은 책</h3>
+						<!-- 읽은 책 없습니다. -->
+						<div class="opct-area">
+							<div class="opct">최근 읽은 책이 없습니다.</div>
+						</div>
+						<!-- 읽은 책 3권 보이기 -->
+						<ul class="view-book view3-book">
+							<li><a href="#"><img src="../img/book_img/book_sample01.jpg" alt="읽은 책 제목1"></a></li>
+							<li><a href="#"><img src="../img/book_img/book_sample01.jpg" alt="읽은 책 제목2"></a></li>
+							<li><a href="#"><img src="../img/book_img/book_sample01.jpg" alt="읽은 책 제목3"></a></li>
+						</ul>
+					</div>
+					<div class="my-page">
+						<h3>마이페이지</h3>
+						<ul>
+							<li><a href="#">개인정보수정</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">통계</a><span class="arrow">&gt;</span></li>
+						</ul>
+					</div>
+					<div class="gnb-area">
+						<h3>서비스 메뉴</h3>
+						<ul class="gnb-menu">
+							<li><a href="#">공지사항</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">이벤트</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">무료도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">인기도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">추천도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">도서신청</a><span class="arrow">&gt;</span></li>
+						</ul>
+					</div>
+					<div class="panel-bottom">
+						<a class="service-center"><span class="icon-service"></span><span>고객센터</span></a>
+						<a class="advice"><span class="icon-advice"></span><span>건의사항</span></a>
+						<div class="btn-app"><a href="#">App 다운로드</a></div>
+					</div>
+				</div>
+			</div>
+			<!-- panel End -->
+			<!-- header -->
+			<div data-role="header">
+				<!-- logo -->
+				<div class="header-top">
+					<div class="header-btn-left btn-forward"><a href="#" ></a></div>
+					<h1><a href="#"><img src="../img/common/logo.png" alt="BOOKtalk"></a></h1>
+					<div class="header-btn-right">
+						<span class="btn-search"></span>
+						 <a href="#overlayPanel" class="ui-btn-inline btn-panel"></a>
+					</div>
+				</div>
+				<!-- logo End -->
+			</div>
+			<!-- header End -->
+			<!-- main -->
+			<div data-role="main" class="ui-content stats-area">
+				<h2>통계 > 독서 습관</h2>
+				<div class="reading-habit-area">
+					<h3>책을 많이 읽은 시기</h3>
+					<ul class="habit-date-list">
+						<li>
+							<div class="habit-date-box">
+								<div class="reading-type-tit">시간</div>
+								<div class="reading-type-txt">
+									<span class="time-txt">20 : 00</span>
+									<span class="time-txt">-</span>
+									<span class="time-txt">22 : 00</span>
+								</div>
+							</div>
+							<div class="btn-habit-more"><a href="#m-habit01" data-transition="none">자세히 보기</a></div>
+						</li>
+						<li>
+							<div class="habit-date-box">
+								<div class="reading-type-tit">요일</div>
+								<div class="reading-type-txt">
+									<div class="day-txt">일요일</div>
+								</div>
+							</div>
+							<div class="btn-habit-more"><a href="#m-habit02" class="ui-btn-active ui-state-persist" data-transition="none">자세히 보기</a></div>
+						</li>
+						<li>
+							<div class="habit-date-box">
+								<div class="reading-type-tit">계절</div>
+								<div class="reading-type-txt">
+									<div class="season-txt winter">겨울</div>
+								</div>
+							</div>
+							<div class="btn-habit-more"><a href="#m-habit03" data-transition="none">자세히 보기</a></div>
+						</li>
+					</ul>
+					<!-- 요일별 -->
+					<div class="habit-cont-area">
+						<h3>요일별</h3>
+						<div class="day-graph-area">
+							<div class="day-graph">그래프 바</div>
+						</div>
+					</div>
+					<!-- 요일별 End -->
+				</div>
+			</div>
+			<!-- main End -->
+		</div>
+		<!-- m-habit02 End -->
+		<!-- m-habit03 -->
+		<div data-role="page" id="m-habit03">
+			<!-- panel -->
+			<div data-role="panel" id="overlayPanel" data-display="overlay" data-position="right">
+				<div class="panel-area user-logout"><!-- display:none; -->
+					<div class="panel-header">
+						<h2>전체 메뉴 목록</h2>
+						<a href="#pageone" data-rel="close" class="btn-panel-close">Close</a>
+					</div>
+					<div class="panel-login-area">
+						<p class="login-txt">로그인이 필요합니다.</p>
+						<a class="btn-panel-login" href="#">로그인<span class="gnb_login"></span></a>
+					</div>
+					<div class="gnb-area">
+						<h3>서비스 메뉴</h3>
+						<ul class="gnb-menu">
+							<li><a href="#">공지사항</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">이벤트</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">무료도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">인기도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">추천도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">도서신청</a><span class="arrow">&gt;</span></li>
+						</ul>
+					</div>
+					<div class="panel-bottom">
+						<a class="service-center"><span class="icon-service"></span><span>고객센터</span></a>
+						<a class="advice"><span class="icon-advice"></span><span>건의사항</span></a>
+						<div class="btn-app"><a href="#">App 다운로드</a></div>
+					</div>
+				</div>
+				<div class="panel-area user-login"><!-- display:block; -->
+					<div class="panel-header">
+						<h2>전체 메뉴 목록</h2>
+						<a href="#pageone" data-rel="close" class="btn-panel-close">Close</a>
+					</div>
+					<div class="user-img-area">
+						<div class="user-img-bg">
+							<div class="user-img"><img src="../img/common/user_img.png" alt=""></div>
+						</div>
+						<div class="user-info">
+							<div class="user-id">사용자 아이디</div>
+							<div class="user-msg">프로필메세지</div>
+						</div>
+					</div>
+					<div class="s-menu-area">
+						<ul>
+							<li><a href="#">내 서재</a></li>
+							<li><a href="#">찜 목록</a></li>
+							<li><a href="#">장바구니</a></li>
+						</ul>	
+					</div>
+					<div class="my-pocket-area">
+						<h3>내 지갑</h3>
+						<ul class="pocket-list">
+							<li><strong>15,000</strong><span>캐시</span></li>
+							<li><strong>1,000</strong><span>포인트</span></li>
+							<li><strong>0</strong><span>쿠폰</span></li>
+							<li><strong>0</strong><span>대여권</span></li>
+						</ul>
+					</div>
+					<div class="readbooks-list">
+						<h3>최근 읽은 책</h3>
+						<!-- 읽은 책 없습니다. -->
+						<div class="opct-area">
+							<div class="opct">최근 읽은 책이 없습니다.</div>
+						</div>
+						<!-- 읽은 책 3권 보이기 -->
+						<ul class="view-book view3-book">
+							<li><a href="#"><img src="../img/book_img/book_sample01.jpg" alt="읽은 책 제목1"></a></li>
+							<li><a href="#"><img src="../img/book_img/book_sample01.jpg" alt="읽은 책 제목2"></a></li>
+							<li><a href="#"><img src="../img/book_img/book_sample01.jpg" alt="읽은 책 제목3"></a></li>
+						</ul>
+					</div>
+					<div class="my-page">
+						<h3>마이페이지</h3>
+						<ul>
+							<li><a href="#">개인정보수정</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">통계</a><span class="arrow">&gt;</span></li>
+						</ul>
+					</div>
+					<div class="gnb-area">
+						<h3>서비스 메뉴</h3>
+						<ul class="gnb-menu">
+							<li><a href="#">공지사항</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">이벤트</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">무료도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">인기도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">추천도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">도서신청</a><span class="arrow">&gt;</span></li>
+						</ul>
+					</div>
+					<div class="panel-bottom">
+						<a class="service-center"><span class="icon-service"></span><span>고객센터</span></a>
+						<a class="advice"><span class="icon-advice"></span><span>건의사항</span></a>
+						<div class="btn-app"><a href="#">App 다운로드</a></div>
+					</div>
+				</div>
+			</div>
+			<!-- panel End -->
+			<!-- header -->
+			<div data-role="header">
+				<!-- logo -->
+				<div class="header-top">
+					<div class="header-btn-left btn-forward"><a href="#" ></a></div>
+					<h1><a href="#"><img src="../img/common/logo.png" alt="BOOKtalk"></a></h1>
+					<div class="header-btn-right">
+						<span class="btn-search"></span>
+						 <a href="#overlayPanel" class="ui-btn-inline btn-panel"></a>
+					</div>
+				</div>
+				<!-- logo End -->
+			</div>
+			<!-- header End -->
+			<!-- main -->
+			<div data-role="main" class="ui-content stats-area">
+				<h2>통계 > 독서 습관</h2>
+				<div class="reading-habit-area">
+					<h3>책을 많이 읽은 시기</h3>
+					<ul class="habit-date-list">
+						<li>
+							<div class="habit-date-box">
+								<div class="reading-type-tit">시간</div>
+								<div class="reading-type-txt">
+									<span class="time-txt">20 : 00</span>
+									<span class="time-txt">-</span>
+									<span class="time-txt">22 : 00</span>
+								</div>
+							</div>
+							<div class="btn-habit-more"><a href="#m-habit01" data-transition="none">자세히 보기</a></div>
+						</li>
+						<li>
+							<div class="habit-date-box">
+								<div class="reading-type-tit">요일</div>
+								<div class="reading-type-txt">
+									<div class="day-txt">일요일</div>
+								</div>
+							</div>
+							<div class="btn-habit-more"><a href="#m-habit02" data-transition="none">자세히 보기</a></div>
+						</li>
+						<li>
+							<div class="habit-date-box">
+								<div class="reading-type-tit">계절</div>
+								<div class="reading-type-txt">
+									<div class="season-txt winter">겨울</div> <!-- spring/summer/fall/winter  -->
+								</div>
+							</div>
+							<div class="btn-habit-more"><a href="#m-habit03" class="ui-btn-active ui-state-persist" data-transition="none">자세히 보기</a></div>
+						</li>
+					</ul>
+					<!-- 계절별 -->
+					<div class="habit-cont-area">
+						<h3>계절별</h3>
+						<div class="season-graph-area">
+							<div class="season-graph">원형</div>
+							<div class="season-reading-area">
+								<dl class="season-reading">
+									<dt>봄</dt>
+									<dd>10%</dd>
+								</dl>
+								<dl class="season-reading">
+									<dt>여름</dt>
+									<dd>10%</dd>
+								</dl>
+								<dl class="season-reading">
+									<dt>가을</dt>
+									<dd>10%</dd>
+								</dl>
+								<dl class="season-reading">
+									<dt>겨울</dt>
+									<dd>10%</dd>
+								</dl>
+							</div>
+						</div>
+					</div>
+					<!-- 계절별 End -->
+				</div>
+			</div>
+			<!-- main End -->
+		</div>
+		<!-- m-habit03 End -->
+	</body>
+</html>

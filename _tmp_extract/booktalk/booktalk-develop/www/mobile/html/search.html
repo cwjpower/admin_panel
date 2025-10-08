@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>BOOK talk</title>
+		<link rel="shortcut icon" href="favicon.ico">
+		<!-- css -->
+		<link rel="stylesheet" href="/mobile/css/jquery.mobile-1.4.5.css">
+		<link rel="stylesheet" href="/mobile/css/globals.css">
+		<link rel="stylesheet" href="/mobile/css/search.css">
+		<!-- js -->
+		<script src="/includes/js/jquery.min.js"></script>
+		<script src="/includes/js/jquery.mobile-1.4.5.min.js"></script>
+		<script>
+		$(document).ready(function(){
+			$(".publisher-tit").click(function(){
+
+				$(".book-arrow-down").toggleClass("book-arrow-up");
+				$(".book-author-arrow").text(function(i, v){
+				   return v === '보기' ? '접기' : '보기'
+				});
+		
+			});
+		});
+		</script>
+	</head>
+	<body>
+		<!-- m-search01 -->
+		<div data-role="page" id="m-search01">
+			<!-- panel -->
+			<div data-role="panel" id="overlayPanel" data-display="overlay" data-position="right">
+				<div class="panel-area user-logout"><!-- display:none; -->
+					<div class="panel-header">
+						<h2>전체 메뉴 목록</h2>
+						<a href="#pageone" data-rel="close" class="btn-panel-close">Close</a>
+					</div>
+					<div class="panel-login-area">
+						<p class="login-txt">로그인이 필요합니다.</p>
+						<a class="btn-panel-login" href="#">로그인<span class="gnb_login"></span></a>
+					</div>
+					<div class="gnb-area">
+						<h3>서비스 메뉴</h3>
+						<ul class="gnb-menu">
+							<li><a href="#">공지사항</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">이벤트</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">무료도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">인기도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">추천도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">도서신청</a><span class="arrow">&gt;</span></li>
+						</ul>
+					</div>
+					<div class="panel-bottom">
+						<a class="service-center"><span class="icon-service"></span><span>고객센터</span></a>
+						<a class="advice"><span class="icon-advice"></span><span>건의사항</span></a>
+						<div class="btn-app"><a href="#">App 다운로드</a></div>
+					</div>
+				</div>
+				<div class="panel-area user-login"><!-- display:block; -->
+					<div class="panel-header">
+						<h2>전체 메뉴 목록</h2>
+						<a href="#pageone" data-rel="close" class="btn-panel-close">Close</a>
+					</div>
+					<div class="user-img-area">
+						<div class="user-img-bg">
+							<div class="user-img"><img src="../img/common/user_img.png" alt=""></div>
+						</div>
+						<div class="user-info">
+							<div class="user-id">사용자 아이디</div>
+							<div class="user-msg">프로필메세지</div>
+						</div>
+					</div>
+					<div class="s-menu-area">
+						<ul>
+							<li><a href="#">내 서재</a></li>
+							<li><a href="#">찜 목록</a></li>
+							<li><a href="#">장바구니</a></li>
+						</ul>	
+					</div>
+					<div class="my-pocket-area">
+						<h3>내 지갑</h3>
+						<ul class="pocket-list">
+							<li><strong>15,000</strong><span>캐시</span></li>
+							<li><strong>1,000</strong><span>포인트</span></li>
+							<li><strong>0</strong><span>쿠폰</span></li>
+							<li><strong>0</strong><span>대여권</span></li>
+						</ul>
+					</div>
+					<div class="readbooks-list">
+						<h3>최근 읽은 책</h3>
+						<!-- 읽은 책 없습니다. -->
+						<div class="opct-area">
+							<div class="opct">최근 읽은 책이 없습니다.</div>
+						</div>
+						<!-- 읽은 책 3권 보이기 -->
+						<ul class="view-book view3-book">
+							<li><a href="#"><img src="../img/book_img/book_sample01.jpg" alt="읽은 책 제목1"></a></li>
+							<li><a href="#"><img src="../img/book_img/book_sample01.jpg" alt="읽은 책 제목2"></a></li>
+							<li><a href="#"><img src="../img/book_img/book_sample01.jpg" alt="읽은 책 제목3"></a></li>
+						</ul>
+					</div>
+					<div class="my-page">
+						<h3>마이페이지</h3>
+						<ul>
+							<li><a href="#">개인정보수정</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">통계</a><span class="arrow">&gt;</span></li>
+						</ul>
+					</div>
+					<div class="gnb-area">
+						<h3>서비스 메뉴</h3>
+						<ul class="gnb-menu">
+							<li><a href="#">공지사항</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">이벤트</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">무료도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">인기도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">추천도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">도서신청</a><span class="arrow">&gt;</span></li>
+						</ul>
+					</div>
+					<div class="panel-bottom">
+						<a class="service-center"><span class="icon-service"></span><span>고객센터</span></a>
+						<a class="advice"><span class="icon-advice"></span><span>건의사항</span></a>
+						<div class="btn-app"><a href="#">App 다운로드</a></div>
+					</div>
+				</div>
+			</div>
+			<!-- panel End -->
+			<!-- header -->
+			<div data-role="header">
+				<!-- header-search -->
+				<div class="header-search">
+					<div class="header-btn-left btn-forward"><a href="#" ></a></div>
+					<div class="frm-search-area">
+						<form action="">
+							<div class="frm-search">
+								<input type="text" placeholder="검색어 입력"><span class="search-del">입력 내용 삭제</span>
+							</div>
+							<button class="search">search</button><button class="close">닫기</button>
+						</form>
+					</div>
+					<div class="header-btn-right">
+						 <a href="#overlayPanel" class="ui-btn-inline btn-panel"></a>
+					</div>
+				</div>
+				<!-- header-search End -->
+			</div>
+			<!-- header End -->
+			<!-- main -->
+			<div data-role="main" class="ui-content book-search-area">
+				<h2>도서명 검색결과</h2>
+				<ul class="m-search">
+			    	<li><a href="#" class="ui-btn-active ui-state-persist" data-transition="none">도서(0)</a></li>
+			    	<li><a href="#m-search02" data-transition="none">출판사(0)</a></li>
+			    	<li><a href="#m-search03" data-transition="none">작가(0)</a></li>
+			    	<li><a href="#m-search04" data-transition="none">큐레이팅(0)</a></li>
+			    </ul>
+			    <div class="book-search-box book-search-view">
+			    	<ul class="book-view-area">
+						<li>
+							<div class="book-view">
+								<div class="book-pic"><a href="#"><img src="../img/book_img/book_sample01.jpg" alt="채식주의자"></a></div>
+								<div class="book-txt">
+									<span class="book-tit"><a href="#">연작소설채식주의자</a></span>
+									<span class="book-writer">작가한강</span>
+								</div>
+							</div>
+						</li>
+						<li>
+							<div class="book-view">
+								<div class="book-pic"><a href="#"><img src="../img/book_img/book_sample01.jpg" alt="채식주의자"></a></div>
+								<div class="book-txt">
+									<span class="book-tit"><a href="#">책 제목</a></span>
+									<span class="book-writer">작가 한강</span>
+								</div>
+							</div>
+						</li>
+						<li>
+							<div class="book-view">
+								<div class="book-pic"><a href="#"><img src="../img/book_img/book_sample01.jpg" alt="채식주의자"></a></div>
+								<div class="book-txt">
+									<span class="book-tit"><a href="#">책 제목</a></span>
+									<span class="book-writer">작가</span>
+								</div>
+							</div>
+						</li>
+						<li>
+							<div class="book-view">
+								<div class="book-pic"><a href="#"><img src="../img/book_img/book_sample01.jpg" alt="채식주의자"></a></div>
+								<div class="book-txt">
+									<span class="book-tit"><a href="#">책 제목</a></span>
+									<span class="book-writer">작가</span>
+								</div>
+							</div>
+						</li>
+					</ul>
+			    </div>
+			</div>
+			<!-- main End -->
+		</div>
+		<!-- m-search01 End -->
+		
+		<!-- m-search02 -->
+		<div data-role="page" id="m-search02">
+			<!-- panel -->
+			<div data-role="panel" id="overlayPanel" data-display="overlay" data-position="right">
+				<div class="panel-area user-logout"><!-- display:none; -->
+					<div class="panel-header">
+						<h2>전체 메뉴 목록</h2>
+						<a href="#pageone" data-rel="close" class="btn-panel-close">Close</a>
+					</div>
+					<div class="panel-login-area">
+						<p class="login-txt">로그인이 필요합니다.</p>
+						<a class="btn-panel-login" href="#">로그인<span class="gnb_login"></span></a>
+					</div>
+					<div class="gnb-area">
+						<h3>서비스 메뉴</h3>
+						<ul class="gnb-menu">
+							<li><a href="#">공지사항</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">이벤트</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">무료도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">인기도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">추천도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">도서신청</a><span class="arrow">&gt;</span></li>
+						</ul>
+					</div>
+					<div class="panel-bottom">
+						<a class="service-center"><span class="icon-service"></span><span>고객센터</span></a>
+						<a class="advice"><span class="icon-advice"></span><span>건의사항</span></a>
+						<div class="btn-app"><a href="#">App 다운로드</a></div>
+					</div>
+				</div>
+				<div class="panel-area user-login"><!-- display:block; -->
+					<div class="panel-header">
+						<h2>전체 메뉴 목록</h2>
+						<a href="#pageone" data-rel="close" class="btn-panel-close">Close</a>
+					</div>
+					<div class="user-img-area">
+						<div class="user-img-bg">
+							<div class="user-img"><img src="../img/common/user_img.png" alt=""></div>
+						</div>
+						<div class="user-info">
+							<div class="user-id">사용자 아이디</div>
+							<div class="user-msg">프로필메세지</div>
+						</div>
+					</div>
+					<div class="s-menu-area">
+						<ul>
+							<li><a href="#">내 서재</a></li>
+							<li><a href="#">찜 목록</a></li>
+							<li><a href="#">장바구니</a></li>
+						</ul>	
+					</div>
+					<div class="my-pocket-area">
+						<h3>내 지갑</h3>
+						<ul class="pocket-list">
+							<li><strong>15,000</strong><span>캐시</span></li>
+							<li><strong>1,000</strong><span>포인트</span></li>
+							<li><strong>0</strong><span>쿠폰</span></li>
+							<li><strong>0</strong><span>대여권</span></li>
+						</ul>
+					</div>
+					<div class="readbooks-list">
+						<h3>최근 읽은 책</h3>
+						<!-- 읽은 책 없습니다. -->
+						<div class="opct-area">
+							<div class="opct">최근 읽은 책이 없습니다.</div>
+						</div>
+						<!-- 읽은 책 3권 보이기 -->
+						<ul class="view-book view3-book">
+							<li><a href="#"><img src="../img/book_img/book_sample01.jpg" alt="읽은 책 제목1"></a></li>
+							<li><a href="#"><img src="../img/book_img/book_sample01.jpg" alt="읽은 책 제목2"></a></li>
+							<li><a href="#"><img src="../img/book_img/book_sample01.jpg" alt="읽은 책 제목3"></a></li>
+						</ul>
+					</div>
+					<div class="my-page">
+						<h3>마이페이지</h3>
+						<ul>
+							<li><a href="#">개인정보수정</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">통계</a><span class="arrow">&gt;</span></li>
+						</ul>
+					</div>
+					<div class="gnb-area">
+						<h3>서비스 메뉴</h3>
+						<ul class="gnb-menu">
+							<li><a href="#">공지사항</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">이벤트</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">무료도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">인기도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">추천도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">도서신청</a><span class="arrow">&gt;</span></li>
+						</ul>
+					</div>
+					<div class="panel-bottom">
+						<a class="service-center"><span class="icon-service"></span><span>고객센터</span></a>
+						<a class="advice"><span class="icon-advice"></span><span>건의사항</span></a>
+						<div class="btn-app"><a href="#">App 다운로드</a></div>
+					</div>
+				</div>
+			</div>
+			<!-- panel End -->
+			<!-- header -->
+			<div data-role="header">
+				<!-- header-search -->
+				<div class="header-search">
+					<div class="header-btn-left btn-forward"><a href="#" ></a></div>
+					<div class="frm-search-area">
+						<form action="">
+							<div class="frm-search">
+								<input type="text" placeholder="검색어 입력"><span class="search-del">입력 내용 삭제</span>
+							</div>
+							<button class="search">search</button><button class="close">닫기</button>
+						</form>
+					</div>
+					<div class="header-btn-right">
+						 <a href="#overlayPanel" class="ui-btn-inline btn-panel"></a>
+					</div>
+				</div>
+				<!-- header-search End -->
+			</div>
+			<!-- header End -->
+			<!-- main -->
+			<div data-role="main" class="ui-content book-search-area">
+				<h2>출판사 검색결과</h2>
+				<ul class="m-search">
+			    	<li><a href="#m-search01" data-transition="none">도서(0)</a></li>
+			    	<li><a href="#" class="ui-btn-active ui-state-persist" data-transition="none">출판사(0)</a></li>
+			    	<li><a href="#m-search03" data-transition="none">작가(0)</a></li>
+			    	<li><a href="#m-search04" data-transition="none">큐레이팅(0)</a></li>
+			    </ul>
+			    <div class="book-search-view">
+			    	<div data-role="collapsible" data-collapsed="true">
+						<h1 class="publisher-tit">A출판사
+							<div class="book-search-r book-arrow-down">등록 책 보기[0]</div>
+						</h1>
+						<ul class="book-search-name">
+							<li><a href="#">책 제목1</a></li>
+							<li><a href="#">책 제목2</a></li>
+							<li><a href="#">책 제목3</a></li>
+						</ul>
+					</div>			    	
+			    </div>
+			</div>
+			<!-- main End -->
+		</div>
+		<!-- m-search02 End -->
+		
+		<!-- m-search03 -->
+		<div data-role="page" id="m-search03">
+			<!-- panel -->
+			<div data-role="panel" id="overlayPanel" data-display="overlay" data-position="right">
+				<div class="panel-area user-logout"><!-- display:none; -->
+					<div class="panel-header">
+						<h2>전체 메뉴 목록</h2>
+						<a href="#pageone" data-rel="close" class="btn-panel-close">Close</a>
+					</div>
+					<div class="panel-login-area">
+						<p class="login-txt">로그인이 필요합니다.</p>
+						<a class="btn-panel-login" href="#">로그인<span class="gnb_login"></span></a>
+					</div>
+					<div class="gnb-area">
+						<h3>서비스 메뉴</h3>
+						<ul class="gnb-menu">
+							<li><a href="#">공지사항</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">이벤트</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">무료도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">인기도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">추천도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">도서신청</a><span class="arrow">&gt;</span></li>
+						</ul>
+					</div>
+					<div class="panel-bottom">
+						<a class="service-center"><span class="icon-service"></span><span>고객센터</span></a>
+						<a class="advice"><span class="icon-advice"></span><span>건의사항</span></a>
+						<div class="btn-app"><a href="#">App 다운로드</a></div>
+					</div>
+				</div>
+				<div class="panel-area user-login"><!-- display:block; -->
+					<div class="panel-header">
+						<h2>전체 메뉴 목록</h2>
+						<a href="#pageone" data-rel="close" class="btn-panel-close">Close</a>
+					</div>
+					<div class="user-img-area">
+						<div class="user-img-bg">
+							<div class="user-img"><img src="../img/common/user_img.png" alt=""></div>
+						</div>
+						<div class="user-info">
+							<div class="user-id">사용자 아이디</div>
+							<div class="user-msg">프로필메세지</div>
+						</div>
+					</div>
+					<div class="s-menu-area">
+						<ul>
+							<li><a href="#">내 서재</a></li>
+							<li><a href="#">찜 목록</a></li>
+							<li><a href="#">장바구니</a></li>
+						</ul>	
+					</div>
+					<div class="my-pocket-area">
+						<h3>내 지갑</h3>
+						<ul class="pocket-list">
+							<li><strong>15,000</strong><span>캐시</span></li>
+							<li><strong>1,000</strong><span>포인트</span></li>
+							<li><strong>0</strong><span>쿠폰</span></li>
+							<li><strong>0</strong><span>대여권</span></li>
+						</ul>
+					</div>
+					<div class="readbooks-list">
+						<h3>최근 읽은 책</h3>
+						<!-- 읽은 책 없습니다. -->
+						<div class="opct-area">
+							<div class="opct">최근 읽은 책이 없습니다.</div>
+						</div>
+						<!-- 읽은 책 3권 보이기 -->
+						<ul class="view-book view3-book">
+							<li><a href="#"><img src="../img/book_img/book_sample01.jpg" alt="읽은 책 제목1"></a></li>
+							<li><a href="#"><img src="../img/book_img/book_sample01.jpg" alt="읽은 책 제목2"></a></li>
+							<li><a href="#"><img src="../img/book_img/book_sample01.jpg" alt="읽은 책 제목3"></a></li>
+						</ul>
+					</div>
+					<div class="my-page">
+						<h3>마이페이지</h3>
+						<ul>
+							<li><a href="#">개인정보수정</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">통계</a><span class="arrow">&gt;</span></li>
+						</ul>
+					</div>
+					<div class="gnb-area">
+						<h3>서비스 메뉴</h3>
+						<ul class="gnb-menu">
+							<li><a href="#">공지사항</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">이벤트</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">무료도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">인기도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">추천도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">도서신청</a><span class="arrow">&gt;</span></li>
+						</ul>
+					</div>
+					<div class="panel-bottom">
+						<a class="service-center"><span class="icon-service"></span><span>고객센터</span></a>
+						<a class="advice"><span class="icon-advice"></span><span>건의사항</span></a>
+						<div class="btn-app"><a href="#">App 다운로드</a></div>
+					</div>
+				</div>
+			</div>
+			<!-- panel End -->
+			<!-- header -->
+			<div data-role="header">
+				<!-- header-search -->
+				<div class="header-search">
+					<div class="header-btn-left btn-forward"><a href="#" ></a></div>
+					<div class="frm-search-area">
+						<form action="">
+							<div class="frm-search">
+								<input type="text" placeholder="검색어 입력"><span class="search-del">입력 내용 삭제</span>
+							</div>
+							<button class="search">search</button><button class="close">닫기</button>
+						</form>
+					</div>
+					<div class="header-btn-right">
+						 <a href="#overlayPanel" class="ui-btn-inline btn-panel"></a>
+					</div>
+				</div>
+				<!-- header-search End -->
+			</div>
+			<!-- header End -->
+			<!-- main -->
+			<div data-role="main" class="ui-content book-search-area">
+				<h2>작가명 검색결과</h2>
+				<ul class="m-search">
+			    	<li><a href="#m-search01" data-transition="none">도서(0)</a></li>
+			    	<li><a href="#m-search02" data-transition="none">출판사(0)</a></li>
+			    	<li><a href="#" class="ui-btn-active ui-state-persist" data-transition="none">작가(0)</a></li>
+			    	<li><a href="#m-search04" data-transition="none">큐레이팅(0)</a></li>
+			    </ul>
+			    <div class="book-search-view">
+			    	<div data-role="collapsible" data-collapsed="true">
+						<h1 class="publisher-tit">작가이름
+							<div class="book-search-r book-arrow-down book-author-arrow">보기</div>
+						</h1>
+						<ul class="book-author">
+							<li><strong>작가소개</strong>
+								<div class="book-author-txt">
+									작가소개<br>
+									저자 한강은 1970년 늦은 11월에 태어났다. 연세대 국문과를 졸업한 뒤 1993년 『문학과사회』에 시를 발표하고, 이듬해 서울신문 신춘문예에 단편소설 「붉은 닻」이 당선되어 작품활동을 시작했다. 장편소설 『검은 사슴』 『그대의 차가운 손』 『채식주의자』 『바람이 분다, 가라』 『희랍어 시간』 『소년이 온다』, 소설집 『여수의 사랑』 『내 여자의 열매』 『노랑무늬영원』, 시집 『서랍에 저녁을 넣어 두었다』 등이 있다. 만해문학상, 황순원문학상, 동리문학상, 이상문학상, 오늘의 젊은예술가상, 한국소설문학상을 수상했다. 한편 2007년 출간한 『채식주의자』는 올해 영미판 출간에 대한 호평 기사가 뉴욕타임스 등 여러 언론에 소개되고 맨부커 인터내셔널상 후보 선정 소식이 잇따르며 인간의 폭력성과 존엄에 질문을 던지는 한강 작품에 대한 국내외 관심이 높아지고 있다. 만해문학상 수상작 『소년이 온다』의 해외 번역 판권도 20개국에 팔리며 한국문학에 활기를 더해주고 있다.
+								</div>
+							</li>
+							<li><strong>도서</strong>
+								<div class="book-author-list">
+									<dl>
+										<dt><a href="#"><img src="../img/book_img/book_sample01.jpg" alt=""></a></dt>
+										<dd><a href="#">채식주의자</a></dd>
+									</dl>
+									<dl>
+										<dt><a href="#"><img src="../img/book_img/book_sample01.jpg" alt=""></a></dt>
+										<dd><a href="#">롤리타 불안의 책 한밤의 아이들</a></dd>
+									</dl>
+									<dl>
+										<dt><a href="#"><img src="../img/book_img/book_sample01.jpg" alt=""></a></dt>
+										<dd><a href="#">못 참는 아이 욱하는 부모 </a></dd>
+									</dl>
+								</div>
+								<p class="book-author-more"><a href="#">전체보기</a></p>
+							</li>
+						</ul>
+					</div>			    	
+			    </div>
+			</div>
+			<!-- main End -->
+		</div>
+		<!-- m-search03 End -->
+		
+		<!-- m-search04 -->
+		<div data-role="page" id="m-search04">
+			<!-- panel -->
+			<div data-role="panel" id="overlayPanel" data-display="overlay" data-position="right">
+				<div class="panel-area user-logout"><!-- display:none; -->
+					<div class="panel-header">
+						<h2>전체 메뉴 목록</h2>
+						<a href="#pageone" data-rel="close" class="btn-panel-close">Close</a>
+					</div>
+					<div class="panel-login-area">
+						<p class="login-txt">로그인이 필요합니다.</p>
+						<a class="btn-panel-login" href="#">로그인<span class="gnb_login"></span></a>
+					</div>
+					<div class="gnb-area">
+						<h3>서비스 메뉴</h3>
+						<ul class="gnb-menu">
+							<li><a href="#">공지사항</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">이벤트</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">무료도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">인기도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">추천도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">도서신청</a><span class="arrow">&gt;</span></li>
+						</ul>
+					</div>
+					<div class="panel-bottom">
+						<a class="service-center"><span class="icon-service"></span><span>고객센터</span></a>
+						<a class="advice"><span class="icon-advice"></span><span>건의사항</span></a>
+						<div class="btn-app"><a href="#">App 다운로드</a></div>
+					</div>
+				</div>
+				<div class="panel-area user-login"><!-- display:block; -->
+					<div class="panel-header">
+						<h2>전체 메뉴 목록</h2>
+						<a href="#pageone" data-rel="close" class="btn-panel-close">Close</a>
+					</div>
+					<div class="user-img-area">
+						<div class="user-img-bg">
+							<div class="user-img"><img src="../img/common/user_img.png" alt=""></div>
+						</div>
+						<div class="user-info">
+							<div class="user-id">사용자 아이디</div>
+							<div class="user-msg">프로필메세지</div>
+						</div>
+					</div>
+					<div class="s-menu-area">
+						<ul>
+							<li><a href="#">내 서재</a></li>
+							<li><a href="#">찜 목록</a></li>
+							<li><a href="#">장바구니</a></li>
+						</ul>	
+					</div>
+					<div class="my-pocket-area">
+						<h3>내 지갑</h3>
+						<ul class="pocket-list">
+							<li><strong>15,000</strong><span>캐시</span></li>
+							<li><strong>1,000</strong><span>포인트</span></li>
+							<li><strong>0</strong><span>쿠폰</span></li>
+							<li><strong>0</strong><span>대여권</span></li>
+						</ul>
+					</div>
+					<div class="readbooks-list">
+						<h3>최근 읽은 책</h3>
+						<!-- 읽은 책 없습니다. -->
+						<div class="opct-area">
+							<div class="opct">최근 읽은 책이 없습니다.</div>
+						</div>
+						<!-- 읽은 책 3권 보이기 -->
+						<ul class="view-book view3-book">
+							<li><a href="#"><img src="../img/book_img/book_sample01.jpg" alt="읽은 책 제목1"></a></li>
+							<li><a href="#"><img src="../img/book_img/book_sample01.jpg" alt="읽은 책 제목2"></a></li>
+							<li><a href="#"><img src="../img/book_img/book_sample01.jpg" alt="읽은 책 제목3"></a></li>
+						</ul>
+					</div>
+					<div class="my-page">
+						<h3>마이페이지</h3>
+						<ul>
+							<li><a href="#">개인정보수정</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">통계</a><span class="arrow">&gt;</span></li>
+						</ul>
+					</div>
+					<div class="gnb-area">
+						<h3>서비스 메뉴</h3>
+						<ul class="gnb-menu">
+							<li><a href="#">공지사항</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">이벤트</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">무료도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">인기도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">추천도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">도서신청</a><span class="arrow">&gt;</span></li>
+						</ul>
+					</div>
+					<div class="panel-bottom">
+						<a class="service-center"><span class="icon-service"></span><span>고객센터</span></a>
+						<a class="advice"><span class="icon-advice"></span><span>건의사항</span></a>
+						<div class="btn-app"><a href="#">App 다운로드</a></div>
+					</div>
+				</div>
+			</div>
+			<!-- panel End -->
+			<!-- header -->
+			<div data-role="header">
+				<!-- header-search -->
+				<div class="header-search">
+					<div class="header-btn-left btn-forward"><a href="#" ></a></div>
+					<div class="frm-search-area">
+						<form action="">
+							<div class="frm-search">
+								<input type="text" placeholder="검색어 입력"><span class="search-del">입력 내용 삭제</span>
+							</div>
+							<button class="search">search</button><button class="close">닫기</button>
+						</form>
+					</div>
+					<div class="header-btn-right">
+						 <a href="#overlayPanel" class="ui-btn-inline btn-panel"></a>
+					</div>
+				</div>
+				<!-- header-search End -->
+			</div>
+			<!-- header End -->
+			<!-- main -->
+			<div data-role="main" class="ui-content book-search-area">
+				<h2>큐레이팅 검색결과</h2>
+				<ul class="m-search">
+			    	<li><a href="#m-search01" data-transition="none">도서(0)</a></li>
+			    	<li><a href="#m-search02" data-transition="none">출판사(0)</a></li>
+			    	<li><a href="#m-search03" data-transition="none">작가(0)</a></li>
+			    	<li><a href="#" class="ui-btn-active ui-state-persist" data-transition="none">큐레이팅(0)</a></li>
+			    </ul>
+			    <div class="book-search-box book-search-view">
+			    	<ul class="curating-area">
+						<li>
+							<div class="curating-img"><a href="#"><img src="../img/common/user_img.png" alt=""></a></div>
+							<div class="curating-txt">
+								<a href="#"><strong>큐레이팅 제목 입니다.</strong></a>
+								<span>작성자 ㅣ 2016.07.29</span>
+							</div>
+						</li>
+						<li>
+							<div class="curating-img"><a href="#"><img src="../img/common/user_img.png" alt=""></a></div>
+							<div class="curating-txt">
+								<a href="#"><strong>큐레이팅 제목 입니다.</strong></a>
+								<span>작성자 ㅣ 2016.07.29</span>
+							</div>
+						</li>
+					</ul>
+			    </div>
+			</div>
+			<!-- main End -->
+		</div>
+		<!-- m-search04 End -->
+	</body>
+</html>
