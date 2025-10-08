@@ -1,15 +1,6 @@
-# Android / Flutter 공통
 **/build/
 **/.gradle/
 **/.idea/
 **/.vscode/
 .dart_tool/
-.packages
-pubspec.lock
 ios/Pods/
-*.keystore
-*.jks
-*.keystore.properties
-# 앱 리소스(필요시 풀기)
-# *.apk
-# *.aab
