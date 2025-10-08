@@ -1,0 +1,13 @@
+@charset "UTF-8";
+/*
+* bebas
+ */
+@font-face {
+  font-family: 'Bebas';
+    src:  url('../fonts/Bebas.ttf.woff') format('woff'),
+    url('../fonts/Bebas.ttf.svg#Bebas') format('svg'),
+    url('../fonts/Bebas.ttf.eot'),
+    url('../fonts/Bebas.eot?#iefix') format('embedded-opentype');
+    font-weight: normal;
+    font-style: normal;
+}
