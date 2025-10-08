@@ -1,31 +1,42 @@
+// lib/utils/colors.dart
+
 import 'package:flutter/material.dart';
 
 class AppColors {
-  // 히어로코믹스 브랜드 컬러
-  static const Color primary = Color(0xFFF1D548); // 노란색 #f1d548
-  static const Color background = Color(0xFF131313); // 검은색 #131313
-  static const Color cardBackground = Color(0xFF262626); // 회색 #262626
+  // Primary colors
+  static const Color primary = Color(0xFF2196F3);  // Blue
+  static const Color primaryDark = Color(0xFF1976D2);
+  static const Color primaryLight = Color(0xFF64B5F6);
 
-  // 브랜드별 색상
-  static const Color marvelRed = Color(0xFFEA2328); // #ea2328
-  static const Color dcBlue = Color(0xFF0376F2); // #0376f2
-  static const Color imageGray = Color(0xFF626262); // #626262
-  static const Color accent = marvelRed;
+  // Secondary colors
+  static const Color secondary = Color(0xFFFF9800);  // Orange
+  static const Color secondaryDark = Color(0xFFF57C00);
+  static const Color secondaryLight = Color(0xFFFFCC80);
 
-  // 텍스트 색상
-  static const Color textPrimary = Color(0xFFFFFFFF); // 흰색
-  static const Color textSecondary = Color(0xFF999999); // 회색
-  static const Color textHint = Color(0xFFBDBDBD);
+  // Text colors
+  static const Color textDark = Color(0xFF212121);  // Almost black
+  static const Color textLight = Color(0xFF757575);  // Gray
+  static const Color textWhite = Color(0xFFFFFFFF);
 
-  // 기타 색상
-  static const Color error = Color(0xFFD32F2F);
-  static const Color success = Color(0xFF4CAF50);
-  static const Color warning = Color(0xFFFFA726);
+  // Background colors
+  static const Color background = Color(0xFFF5F5F5);
+  static const Color backgroundWhite = Color(0xFFFFFFFF);
+  static const Color backgroundGray = Color(0xFFE0E0E0);
 
-  // 그라데이션
-  static const LinearGradient splashGradient = LinearGradient(
-    colors: [Color(0xFFF1D548), Color(0xFFEA2328)],
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
-  );
+  // Status colors
+  static const Color success = Color(0xFF4CAF50);  // Green
+  static const Color warning = Color(0xFFFFC107);  // Amber
+  static const Color error = Color(0xFFF44336);  // Red
+  static const Color info = Color(0xFF2196F3);  // Blue
+
+  // Publisher/Brand colors
+  static const Color marvel = Color(0xFFED1D24);  // Marvel Red
+  static const Color dc = Color(0xFF0376F2);  // DC Blue
+  static const Color image = Color(0xFF800080);  // Image Purple
+  static const Color darkHorse = Color(0xFFFFA500);  // Dark Horse Orange
+
+  // Special colors
+  static const Color gold = Color(0xFFFFD700);
+  static const Color silver = Color(0xFFC0C0C0);
+  static const Color bronze = Color(0xFFCD7F32);
 }

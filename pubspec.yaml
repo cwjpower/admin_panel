@@ -10,7 +10,7 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.8
   http: ^1.1.0                    # 이 줄이 있는지 확인
-  shared_preferences: ^2.2.2      # 이 줄이 있는지 확인
+  shared_preferences: ^2.2.0      # 이 줄이 있는지 확인
 
 dev_dependencies:
   flutter_test:

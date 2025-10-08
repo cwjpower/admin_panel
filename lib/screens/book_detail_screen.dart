@@ -1,3 +1,5 @@
+// lib/screens/book_detail_screen.dart
+
 import 'package:flutter/material.dart';
 import '../models/book.dart';
 import '../models/review.dart';
@@ -6,564 +8,468 @@ import '../utils/colors.dart';
 class BookDetailScreen extends StatefulWidget {
   final Book book;
 
-  const BookDetailScreen({super.key, required this.book});
+  const BookDetailScreen({Key? key, required this.book}) : super(key: key);
 
   @override
-  State<BookDetailScreen> createState() => _BookDetailScreenState();
+  _BookDetailScreenState createState() => _BookDetailScreenState();
 }
 
 class _BookDetailScreenState extends State<BookDetailScreen> {
-  late List<Review> _reviews;
-  bool _isLoading = true;
-  int _quantity = 1;
+  bool isInCart = false;
+  bool isWishlisted = false;
 
-  @override
-  void initState() {
-    super.initState();
-    _loadMockReviews();
-  }
-
-  void _loadMockReviews() async {
-    await Future.delayed(const Duration(milliseconds: 500));
-
-    setState(() {
-      _reviews = [
-        Review(
-          id: 1,
-          bookId: widget.book.id,
-          userId: 1,
-          userName: '히어로팬',
-          rating: 5.0,
-          content: '정말 재미있게 읽었습니다! 스토리 전개가 탄탄하고 그림도 훌륭해요.',
-          createdAt: DateTime.now().subtract(const Duration(days: 1)),
-          likeCount: 24,
-        ),
-        Review(
-          id: 2,
-          bookId: widget.book.id,
-          userId: 2,
-          userName: '마블러버',
-          rating: 4.5,
-          content: '기대 이상이었어요. 캐릭터들의 감정선이 잘 표현되어 있습니다.',
-          createdAt: DateTime.now().subtract(const Duration(days: 3)),
-          likeCount: 15,
-        ),
-        Review(
-          id: 3,
-          bookId: widget.book.id,
-          userId: 3,
-          userName: '코믹스매니아',
-          rating: 4.0,
-          content: '좋은 작품입니다. 다음 권이 기대되네요.',
-          createdAt: DateTime.now().subtract(const Duration(days: 5)),
-          likeCount: 8,
-        ),
-      ];
-      _isLoading = false;
-    });
-  }
+  // Mock reviews - 늦은 초기화로 widget.book.id 사용
+  late final List<Review> reviews = [
+    Review(
+      id: '1',
+      userName: 'John Doe',
+      rating: 5,
+      comment: 'Amazing comic! The artwork is stunning and the story is captivating.',
+      date: DateTime.now().subtract(Duration(days: 2)),
+      bookId: widget.book.id,
+    ),
+    Review(
+      id: '2',
+      userName: 'Jane Smith',
+      rating: 4,
+      comment: 'Great read, though the pacing could be better in some parts.',
+      date: DateTime.now().subtract(Duration(days: 5)),
+      bookId: widget.book.id,
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
-        backgroundColor: AppColors.primary,
-        title: const Text('책 상세', style: TextStyle(color: Colors.black)),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.share, color: Colors.black),
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: const Icon(Icons.favorite_border, color: Colors.black),
-            onPressed: () {},
-          ),
+      backgroundColor: Colors.white,
+      body: CustomScrollView(
+        slivers: [
+          _buildAppBar(),
+          _buildBookInfo(),
+          _buildDescription(),
+          _buildReviews(),
         ],
-      ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
-          : SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildBookHeader(),
-            _buildBookInfo(),
-            _buildDescription(),
-            _buildReviewSummary(),
-            _buildReviewList(),
-          ],
-        ),
       ),
       bottomNavigationBar: _buildBottomBar(),
     );
   }
 
-  Widget _buildBookHeader() {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      color: AppColors.cardBackground,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 120,
-            height: 180,
-            decoration: BoxDecoration(
-              color: AppColors.background,
-              borderRadius: BorderRadius.circular(12),
+  Widget _buildAppBar() {
+    return SliverAppBar(
+      expandedHeight: 400,
+      pinned: true,
+      backgroundColor: AppColors.primary,
+      flexibleSpace: FlexibleSpaceBar(
+        background: Stack(
+          fit: StackFit.expand,
+          children: [
+            Image.network(
+              widget.book.coverImage,
+              fit: BoxFit.cover,
             ),
-            child: widget.book.thumbnail != null
-                ? ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.network(
-                widget.book.thumbnail!,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return const Icon(Icons.book, size: 50, color: AppColors.primary);
-                },
-              ),
-            )
-                : const Center(
-              child: Icon(Icons.book, size: 50, color: AppColors.primary),
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (widget.book.category != null)
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: widget.book.category == 'MARVEL'
-                          ? AppColors.marvelRed
-                          : AppColors.dcBlue,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: Text(
-                      widget.book.category!,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                const SizedBox(height: 8),
-                Text(
-                  widget.book.title,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 4),
-                if (widget.book.author != null)
-                  Text(
-                    widget.book.author!,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                const SizedBox(height: 4),
-                if (widget.book.publisher != null)
-                  Text(
-                    widget.book.publisher!,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                const SizedBox(height: 12),
-                if (widget.book.rating != null)
-                  Row(
-                    children: [
-                      const Icon(Icons.star, size: 20, color: AppColors.primary),
-                      const SizedBox(width: 4),
-                      Text(
-                        widget.book.rating!.toStringAsFixed(1),
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        '(${widget.book.reviewCount ?? 0})',
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildBookInfo() {
-    return Container(
-      margin: const EdgeInsets.only(top: 8),
-      padding: const EdgeInsets.all(20),
-      color: AppColors.cardBackground,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            '도서 정보',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(height: 12),
-          _buildInfoRow('페이지', widget.book.pageCount?.toString() ?? '-'),
-          _buildInfoRow('ISBN', widget.book.isbn ?? '-'),
-          _buildInfoRow('출판일', widget.book.publishDate != null
-              ? '${widget.book.publishDate!.year}.${widget.book.publishDate!.month}.${widget.book.publishDate!.day}'
-              : '-'),
-          _buildInfoRow('재고', widget.book.stockCount != null && widget.book.stockCount! > 0
-              ? '${widget.book.stockCount}권'
-              : '품절'),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildInfoRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 80,
-            child: Text(
-              label,
-              style: const TextStyle(
-                fontSize: 14,
-                color: AppColors.textSecondary,
-              ),
-            ),
-          ),
-          Expanded(
-            child: Text(
-              value,
-              style: const TextStyle(
-                fontSize: 14,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDescription() {
-    if (widget.book.description == null) return const SizedBox.shrink();
-
-    return Container(
-      margin: const EdgeInsets.only(top: 8),
-      padding: const EdgeInsets.all(20),
-      color: AppColors.cardBackground,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            '책 소개',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            widget.book.description!,
-            style: const TextStyle(
-              fontSize: 14,
-              color: AppColors.textSecondary,
-              height: 1.6,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildReviewSummary() {
-    if (_reviews.isEmpty) return const SizedBox.shrink();
-
-    final avgRating = _reviews.fold<double>(0, (sum, r) => sum + r.rating) / _reviews.length;
-
-    return Container(
-      margin: const EdgeInsets.only(top: 8),
-      padding: const EdgeInsets.all(20),
-      color: AppColors.cardBackground,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                '리뷰',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-              TextButton(
-                onPressed: () {},
-                child: const Text('전체보기', style: TextStyle(color: AppColors.primary)),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Column(
-                children: [
-                  Text(
-                    avgRating.toStringAsFixed(1),
-                    style: const TextStyle(
-                      fontSize: 36,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                  const Row(
-                    children: [
-                      Icon(Icons.star, size: 16, color: AppColors.primary),
-                      Icon(Icons.star, size: 16, color: AppColors.primary),
-                      Icon(Icons.star, size: 16, color: AppColors.primary),
-                      Icon(Icons.star, size: 16, color: AppColors.primary),
-                      Icon(Icons.star_half, size: 16, color: AppColors.primary),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '${_reviews.length}개 리뷰',
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(width: 24),
-              Expanded(
-                child: Column(
-                  children: [
-                    _buildRatingBar(5, 45),
-                    _buildRatingBar(4, 30),
-                    _buildRatingBar(3, 15),
-                    _buildRatingBar(2, 7),
-                    _buildRatingBar(1, 3),
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.transparent,
+                    Colors.black.withOpacity(0.7),
                   ],
                 ),
               ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRatingBar(int stars, int percentage) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2),
-      child: Row(
-        children: [
-          Text(
-            '$stars',
-            style: const TextStyle(fontSize: 12, color: Colors.white),
-          ),
-          const SizedBox(width: 4),
-          const Icon(Icons.star, size: 12, color: AppColors.primary),
-          const SizedBox(width: 8),
-          Expanded(
-            child: LinearProgressIndicator(
-              value: percentage / 100,
-              backgroundColor: AppColors.background,
-              valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Text(
-            '$percentage%',
-            style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildReviewList() {
-    return Container(
-      margin: const EdgeInsets.only(top: 8),
-      padding: const EdgeInsets.all(20),
-      color: AppColors.cardBackground,
-      child: ListView.separated(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: _reviews.length,
-        separatorBuilder: (context, index) => const Divider(color: AppColors.background, height: 24),
-        itemBuilder: (context, index) => _buildReviewItem(_reviews[index]),
-      ),
-    );
-  }
-
-  Widget _buildReviewItem(Review review) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            CircleAvatar(
-              radius: 20,
-              backgroundColor: AppColors.primary,
-              child: Text(
-                review.userName[0],
-                style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    review.userName,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      ...List.generate(5, (i) => Icon(
-                        i < review.rating ? Icons.star : Icons.star_border,
-                        size: 14,
-                        color: AppColors.primary,
-                      )),
-                      const SizedBox(width: 8),
-                      Text(
-                        '${review.createdAt.month}.${review.createdAt.day}',
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: AppColors.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
             ),
           ],
         ),
-        const SizedBox(height: 12),
-        Text(
-          review.content,
-          style: const TextStyle(
-            fontSize: 14,
-            color: Colors.white,
-            height: 1.5,
+      ),
+      leading: IconButton(
+        icon: Container(
+          padding: EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.9),
+            shape: BoxShape.circle,
           ),
+          child: Icon(Icons.arrow_back, color: AppColors.textDark, size: 20),
         ),
-        const SizedBox(height: 8),
-        Row(
-          children: [
-            Icon(Icons.thumb_up_outlined, size: 16, color: AppColors.textSecondary),
-            const SizedBox(width: 4),
-            Text(
-              '도움됨 ${review.likeCount}',
-              style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+        onPressed: () => Navigator.pop(context),
+      ),
+      actions: [
+        IconButton(
+          icon: Container(
+            padding: EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.9),
+              shape: BoxShape.circle,
             ),
-          ],
+            child: Icon(
+              isWishlisted ? Icons.favorite : Icons.favorite_border,
+              color: isWishlisted ? Colors.red : AppColors.textDark,
+              size: 20,
+            ),
+          ),
+          onPressed: () {
+            setState(() {
+              isWishlisted = !isWishlisted;
+            });
+          },
+        ),
+        IconButton(
+          icon: Container(
+            padding: EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.9),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(Icons.share, color: AppColors.textDark, size: 20),
+          ),
+          onPressed: () {},
         ),
       ],
     );
   }
 
-  Widget _buildBottomBar() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.cardBackground,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            blurRadius: 10,
-            offset: const Offset(0, -2),
-          ),
-        ],
-      ),
-      child: SafeArea(
-        child: Row(
+  Widget _buildBookInfo() {
+    return SliverToBoxAdapter(
+      child: Container(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    '가격',
-                    style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
-                  ),
-                  Text(
-                    widget.book.price != null
-                        ? '${(widget.book.price! * _quantity).toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}원'
-                        : '가격 문의',
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.primary,
+            Row(
+              children: [
+                if (widget.book.isNew)
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(
+                      'NEW',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                ],
+                if (widget.book.isNew) SizedBox(width: 8),
+                if (widget.book.isFree)
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(
+                      'FREE',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+            SizedBox(height: 12),
+            Text(
+              widget.book.title,
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textDark,
               ),
             ),
-            const SizedBox(width: 12),
-            OutlinedButton(
-              onPressed: () {},
-              style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.primary,
-                side: const BorderSide(color: AppColors.primary),
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            SizedBox(height: 8),
+            Text(
+              'by ${widget.book.author}',
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey[600],
               ),
-              child: const Text('장바구니'),
             ),
-            const SizedBox(width: 8),
-            ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: Colors.black,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            SizedBox(height: 8),
+            Text(
+              'Publisher: ${widget.book.publisher}',
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey[600],
               ),
-              child: const Text('구매하기', style: TextStyle(fontWeight: FontWeight.bold)),
+            ),
+            SizedBox(height: 16),
+            Row(
+              children: [
+                Row(
+                  children: List.generate(5, (index) {
+                    return Icon(
+                      index < widget.book.rating.floor()
+                          ? Icons.star
+                          : index < widget.book.rating
+                          ? Icons.star_half
+                          : Icons.star_border,
+                      color: Colors.amber,
+                      size: 20,
+                    );
+                  }),
+                ),
+                SizedBox(width: 8),
+                Text(
+                  widget.book.rating.toStringAsFixed(1),
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(width: 8),
+                Text(
+                  '(${widget.book.reviewCount} reviews)',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey[600],
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 16),
+            Row(
+              children: [
+                Text(
+                  '\$${widget.book.price}',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary,
+                  ),
+                ),
+                Spacer(),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.remove_red_eye, size: 16),
+                      SizedBox(width: 4),
+                      Text('Preview'),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildDescription() {
+    return SliverToBoxAdapter(
+      child: Container(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Description',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textDark,
+              ),
+            ),
+            SizedBox(height: 8),
+            Text(
+              widget.book.description ?? 'No description available for this comic.',
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey[700],
+                height: 1.5,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildReviews() {
+    return SliverToBoxAdapter(
+      child: Container(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text(
+                  'Reviews',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textDark,
+                  ),
+                ),
+                Spacer(),
+                TextButton(
+                  onPressed: () {},
+                  child: Text(
+                    'See All',
+                    style: TextStyle(color: AppColors.primary),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 8),
+            ...reviews.map((review) => _buildReviewCard(review)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildReviewCard(Review review) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 16),
+      padding: EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.grey[50],
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey[200]!),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              CircleAvatar(
+                backgroundColor: AppColors.primary,
+                child: Text(
+                  review.userName[0].toUpperCase(),
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+              SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      review.userName,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        ...List.generate(5, (index) {
+                          return Icon(
+                            index < review.rating
+                                ? Icons.star
+                                : Icons.star_border,
+                            color: Colors.amber,
+                            size: 14,
+                          );
+                        }),
+                        SizedBox(width: 8),
+                        Text(
+                          _getTimeAgo(review.date),
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 8),
+          Text(
+            review.comment,
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey[700],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _getTimeAgo(DateTime date) {
+    final difference = DateTime.now().difference(date);
+    if (difference.inDays > 0) {
+      return '${difference.inDays} days ago';
+    } else if (difference.inHours > 0) {
+      return '${difference.inHours} hours ago';
+    } else {
+      return 'Just now';
+    }
+  }
+
+  Widget _buildBottomBar() {
+    return Container(
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            offset: Offset(0, -2),
+            blurRadius: 8,
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          IconButton(
+            icon: Icon(
+              isInCart ? Icons.shopping_cart : Icons.shopping_cart_outlined,
+              color: isInCart ? AppColors.primary : Colors.grey,
+            ),
+            onPressed: () {
+              setState(() {
+                isInCart = !isInCart;
+              });
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    isInCart
+                        ? 'Added to cart'
+                        : 'Removed from cart',
+                  ),
+                  duration: Duration(seconds: 2),
+                ),
+              );
+            },
+          ),
+          SizedBox(width: 16),
+          Expanded(
+            child: ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                padding: EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+              ),
+              child: Text(
+                'Read Now',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
