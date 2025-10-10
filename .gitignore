@@ -1,0 +1,20 @@
+# PHP / Admin Panel
+/vendor/
+/node_modules/
+/composer.lock
+.env
+.env.*
+.DS_Store
+Thumbs.db
+*.log
+# IDE
+/.idea/
+/.vscode/
+/*.code-workspace
+# Cache/Artifacts
+/cache/
+/storage/
+/build/
+/dist/
+# Uploads(원하면 빼고 올려)
+/uploads/
