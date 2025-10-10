@@ -38,3 +38,6 @@ ios/Runner/GoogleService-Info.plist
 
 # Env
 *.env
+
+_tmp_extract/
+
