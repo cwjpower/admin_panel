@@ -17,9 +17,11 @@ class _MyPageScreenState extends State<MyPageScreen> {
   // Mock user data
   User currentUser = User(
     uid: '1',
-    userName: 'test@test.com',
-    displayName: 'Test User',
-    userLevel: 'normal',
+    userName: '테스터',
+    userEmail: 'test@test.com',  // 이 줄 추가!
+    displayName: '테스터',
+    userLevel: '1',
+    profileImage: 'https://via.placeholder.com/150',
   );
 
   // Mock purchased books
@@ -143,7 +145,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
         children: [
           CircleAvatar(
             radius: 40,
-            backgroundColor: AppColors.primary,
+            backgroundColor: AppColors.primaryRed,
             child: Text(
               currentUser.displayName[0].toUpperCase(),
               style: TextStyle(
@@ -177,14 +179,14 @@ class _MyPageScreenState extends State<MyPageScreen> {
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.1),
+                    color: AppColors.primaryRed.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
                     currentUser.userLevel.toUpperCase(),
                     style: TextStyle(
                       fontSize: 12,
-                      color: AppColors.primary,
+                      color: AppColors.primaryRed,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -216,7 +218,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
   Widget _buildStatItem(String label, String value, IconData icon) {
     return Column(
       children: [
-        Icon(icon, color: AppColors.primary, size: 28),
+        Icon(icon, color: AppColors.primaryRed, size: 28),
         SizedBox(height: 8),
         Text(
           value,
@@ -248,7 +250,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
         children: [
           Row(
             children: [
-              Icon(Icons.shopping_bag, color: AppColors.primary),
+              Icon(Icons.shopping_bag, color: AppColors.primaryRed),
               SizedBox(width: 8),
               Text(
                 '구매 목록',
@@ -263,7 +265,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                 onPressed: () {},
                 child: Text(
                   'View All',
-                  style: TextStyle(color: AppColors.primary),
+                  style: TextStyle(color: AppColors.primaryRed),
                 ),
               ),
             ],
@@ -319,7 +321,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
         children: [
           Row(
             children: [
-              Icon(Icons.book, color: AppColors.primary),
+              Icon(Icons.book, color: AppColors.primaryRed),
               SizedBox(width: 8),
               Text(
                 '읽은 책',
@@ -334,7 +336,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                 onPressed: () {},
                 child: Text(
                   'View All',
-                  style: TextStyle(color: AppColors.primary),
+                  style: TextStyle(color: AppColors.primaryRed),
                 ),
               ),
             ],
@@ -396,7 +398,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
 
   Widget _buildMenuItem(IconData icon, String title, VoidCallback onTap) {
     return ListTile(
-      leading: Icon(icon, color: AppColors.primary),
+      leading: Icon(icon, color: AppColors.primaryRed),
       title: Text(title),
       trailing: Icon(Icons.chevron_right, color: Colors.grey),
       onTap: onTap,

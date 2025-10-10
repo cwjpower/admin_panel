@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="WEB_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/HerosComics-2544bc1a68a6142fab6c1c09135e69e9a4673fb7" isTestSource="false" packagePrefix="app" />
+      <sourceFolder url="file://$MODULE_DIR$/HerosComics-2544bc1a68a6142fab6c1c09135e69e9a4673fb7/tests/unit" isTestSource="false" packagePrefix="tests" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>

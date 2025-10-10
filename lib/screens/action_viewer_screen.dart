@@ -1,376 +1,487 @@
-// lib/screens/action_viewer_screen.dart
-
 import 'package:flutter/material.dart';
-import '../models/comic_frame.dart';
-import '../data/sample_frames.dart';
+import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import '../utils/colors.dart';
+import '../services/storage_service.dart';
 
 class ActionViewerScreen extends StatefulWidget {
-  const ActionViewerScreen({Key? key}) : super(key: key);
+  final String bookId;
+  final int episode;
+  final String bookTitle;
+  final ViewMode mode;
+
+  const ActionViewerScreen({
+    Key? key,
+    required this.bookId,
+    required this.episode,
+    required this.bookTitle,
+    this.mode = ViewMode.vertical,
+  }) : super(key: key);
 
   @override
-  State<ActionViewerScreen> createState() => _ActionViewerScreenState();
+  _ActionViewerScreenState createState() => _ActionViewerScreenState();
 }
 
-class _ActionViewerScreenState extends State<ActionViewerScreen>
-    with SingleTickerProviderStateMixin {
+enum ViewMode {
+  vertical,    // 세로 스크롤 (웹툰)
+  horizontal,  // 가로 프레임 (Action Viewer)
+}
 
-  late ComicBook comicBook;
-  late TransformationController _transformController;
-  late AnimationController _animationController;
-  Animation<Matrix4>? _animation;
+class _ActionViewerScreenState extends State<ActionViewerScreen> {
+  List<dynamic> pages = [];
+  bool isLoading = true;
+  int currentPage = 0;
+  PageController? pageController;
+  ScrollController? scrollController;
+  bool isMenuVisible = false;
+  ViewMode currentMode = ViewMode.vertical;
 
-  int currentPageIndex = 0;
-  int currentFrameIndex = 0;
-
-  bool showUI = true; // UI 표시 여부
+  // 가로 모드용 변수들
+  int currentFrame = 0;
+  TransformationController transformationController = TransformationController();
 
   @override
   void initState() {
     super.initState();
-    comicBook = SampleFrames.getSampleBook();
-    _transformController = TransformationController();
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 400),
-    );
+    currentMode = widget.mode;
 
-    // 초기 프레임으로 이동
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _animateToFrame(0, 0, animated: false);
-    });
+    // 전체 화면 모드
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+
+    if (currentMode == ViewMode.vertical) {
+      scrollController = ScrollController();
+      scrollController!.addListener(_onScroll);
+    } else {
+      pageController = PageController();
+    }
+
+    _loadPages();
+    _loadProgress();
   }
 
   @override
   void dispose() {
-    _transformController.dispose();
-    _animationController.dispose();
+    // 시스템 UI 복원
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+
+    pageController?.dispose();
+    scrollController?.dispose();
+    transformationController.dispose();
+
+    // 진도 저장
+    _saveProgress();
+
     super.dispose();
   }
 
-  /// 특정 프레임으로 애니메이션 이동
-  void _animateToFrame(int pageIndex, int frameIndex, {bool animated = true}) {
-    if (pageIndex >= comicBook.pages.length) return;
+  void _onScroll() {
+    // 세로 스크롤 시 현재 페이지 계산
+    if (scrollController != null && pages.isNotEmpty) {
+      double offset = scrollController!.offset;
+      double pageHeight = MediaQuery.of(context).size.height;
+      int newPage = (offset / pageHeight).floor();
 
-    final page = comicBook.pages[pageIndex];
-    if (frameIndex >= page.frames.length) return;
-
-    setState(() {
-      currentPageIndex = pageIndex;
-      currentFrameIndex = frameIndex;
-    });
-
-    final frame = page.frames[frameIndex];
-    final size = MediaQuery.of(context).size;
-
-    // 화면 크기에 맞춰 스케일 계산
-    final scaleX = size.width / frame.width;
-    final scaleY = size.height / frame.height;
-    final scale = scaleX < scaleY ? scaleX : scaleY;
-
-    // 중앙 정렬을 위한 오프셋 계산
-    final translationX = -frame.x * scale + (size.width - frame.width * scale) / 2;
-    final translationY = -frame.y * scale + (size.height - frame.height * scale) / 2;
-
-    final targetMatrix = Matrix4.identity()
-      ..translate(translationX, translationY)
-      ..scale(scale);
-
-    if (!animated) {
-      _transformController.value = targetMatrix;
-      return;
+      if (newPage != currentPage && newPage >= 0 && newPage < pages.length) {
+        setState(() {
+          currentPage = newPage;
+        });
+      }
     }
-
-    // 부드러운 애니메이션
-    _animation = Matrix4Tween(
-      begin: _transformController.value,
-      end: targetMatrix,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    ));
-
-    _animationController.reset();
-    _animationController.forward();
   }
 
-  /// 다음 프레임으로
-  void _nextFrame() {
-    final currentPage = comicBook.pages[currentPageIndex];
-
-    if (currentFrameIndex < currentPage.frames.length - 1) {
-      // 같은 페이지의 다음 프레임
-      _animateToFrame(currentPageIndex, currentFrameIndex + 1);
-    } else if (currentPageIndex < comicBook.pages.length - 1) {
-      // 다음 페이지의 첫 프레임
-      _animateToFrame(currentPageIndex + 1, 0);
-    } else {
-      // 마지막 프레임
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('마지막 페이지입니다'), duration: Duration(seconds: 1)),
+  Future<void> _loadPages() async {
+    try {
+      final response = await http.get(
+        Uri.parse('http://34.64.84.117:8081/admin/apis/viewer/pages.php?book_id=${widget.bookId}&episode=${widget.episode}&mode=${currentMode.name}'),
       );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        setState(() {
+          pages = data['pages'] ?? [];
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      print('Error loading pages: $e');
+      setState(() {
+        isLoading = false;
+      });
+
+      // 에러 시 더미 데이터
+      setState(() {
+        pages = List.generate(10, (index) => {
+          'page_num': index + 1,
+          'image_url': 'dummy_${index + 1}.jpg',
+        });
+        isLoading = false;
+      });
     }
   }
 
-  /// 이전 프레임으로
-  void _previousFrame() {
-    if (currentFrameIndex > 0) {
-      // 같은 페이지의 이전 프레임
-      _animateToFrame(currentPageIndex, currentFrameIndex - 1);
-    } else if (currentPageIndex > 0) {
-      // 이전 페이지의 마지막 프레임
-      final prevPage = comicBook.pages[currentPageIndex - 1];
-      _animateToFrame(currentPageIndex - 1, prevPage.frames.length - 1);
-    } else {
-      // 첫 프레임
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('첫 페이지입니다'), duration: Duration(seconds: 1)),
-      );
+  Future<void> _loadProgress() async {
+    // 저장된 진도 불러오기
+    final savedPage = await StorageService.getReadingProgress(widget.bookId, widget.episode);
+    if (savedPage != null && savedPage > 0 && savedPage < pages.length) {
+      setState(() {
+        currentPage = savedPage;
+      });
+
+      // 저장된 페이지로 이동
+      if (currentMode == ViewMode.vertical && scrollController != null) {
+        Future.delayed(Duration(milliseconds: 500), () {
+          scrollController!.jumpTo(savedPage * MediaQuery.of(context).size.height);
+        });
+      } else if (pageController != null) {
+        Future.delayed(Duration(milliseconds: 500), () {
+          pageController!.jumpToPage(savedPage);
+        });
+      }
     }
   }
 
-  /// UI 토글
-  void _toggleUI() {
+  Future<void> _saveProgress() async {
+    await StorageService.saveReadingProgress(
+      widget.bookId,
+      widget.episode,
+      currentPage,
+    );
+  }
+
+  void _toggleMenu() {
     setState(() {
-      showUI = !showUI;
+      isMenuVisible = !isMenuVisible;
     });
   }
 
-  /// 터치 위치에 따른 동작
-  void _handleTap(TapDownDetails details) {
-    final width = MediaQuery.of(context).size.width;
-    final x = details.localPosition.dx;
+  void _switchViewMode() {
+    setState(() {
+      currentMode = currentMode == ViewMode.vertical
+          ? ViewMode.horizontal
+          : ViewMode.vertical;
 
-    if (x < width / 3) {
-      // 왼쪽 1/3: 이전 프레임
-      _previousFrame();
-    } else if (x > width * 2 / 3) {
-      // 오른쪽 1/3: 다음 프레임
-      _nextFrame();
-    } else {
-      // 중앙 1/3: UI 토글
-      _toggleUI();
+      // 컨트롤러 재초기화
+      if (currentMode == ViewMode.vertical) {
+        pageController?.dispose();
+        pageController = null;
+        scrollController = ScrollController();
+        scrollController!.addListener(_onScroll);
+      } else {
+        scrollController?.dispose();
+        scrollController = null;
+        pageController = PageController(initialPage: currentPage);
+      }
+    });
+  }
+
+  void _previousPage() {
+    if (currentPage > 0) {
+      setState(() {
+        currentPage--;
+      });
+
+      if (currentMode == ViewMode.horizontal && pageController != null) {
+        pageController!.previousPage(
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
     }
+  }
+
+  void _nextPage() {
+    if (currentPage < pages.length - 1) {
+      setState(() {
+        currentPage++;
+      });
+
+      if (currentMode == ViewMode.horizontal && pageController != null) {
+        pageController!.nextPage(
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
+    }
+  }
+
+  Widget _buildVerticalViewer() {
+    return ListView.builder(
+      controller: scrollController,
+      itemCount: pages.length,
+      itemBuilder: (context, index) {
+        return GestureDetector(
+          onTap: _toggleMenu,
+          child: Container(
+            height: MediaQuery.of(context).size.height,
+            color: Colors.black,
+            child: InteractiveViewer(
+              minScale: 1.0,
+              maxScale: 4.0,
+              child: Center(
+                child: _buildPageContent(pages[index]),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildHorizontalViewer() {
+    return PageView.builder(
+      controller: pageController,
+      onPageChanged: (index) {
+        setState(() {
+          currentPage = index;
+        });
+      },
+      itemCount: pages.length,
+      itemBuilder: (context, index) {
+        return GestureDetector(
+          onTap: _toggleMenu,
+          onHorizontalDragEnd: (details) {
+            // 스와이프로 페이지 넘기기
+            if (details.velocity.pixelsPerSecond.dx > 0) {
+              _previousPage();
+            } else {
+              _nextPage();
+            }
+          },
+          child: InteractiveViewer(
+            transformationController: transformationController,
+            minScale: 1.0,
+            maxScale: 5.0,
+            child: Center(
+              child: _buildPageContent(pages[index]),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildPageContent(Map<String, dynamic> page) {
+    // 실제로는 이미지 URL로 이미지 로드
+    // 지금은 플레이스홀더
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      color: Colors.grey[900],
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.image,
+            size: 100,
+            color: Colors.grey[600],
+          ),
+          SizedBox(height: 20),
+          Text(
+            '${widget.bookTitle}',
+            style: TextStyle(
+              color: Colors.grey[400],
+              fontSize: 16,
+            ),
+          ),
+          Text(
+            '${widget.episode}화 - ${page['page_num']}페이지',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          if (page['image_url'] != null)
+            Text(
+              '${page['image_url']}',
+              style: TextStyle(
+                color: Colors.grey[500],
+                fontSize: 12,
+              ),
+            ),
+        ],
+      ),
+    );
+
+    // 실제 이미지 로드 코드 (나중에 활성화)
+    // return Image.network(
+    //   page['image_url'],
+    //   fit: BoxFit.contain,
+    //   loadingBuilder: (context, child, loadingProgress) {
+    //     if (loadingProgress == null) return child;
+    //     return Center(
+    //       child: CircularProgressIndicator(
+    //         value: loadingProgress.expectedTotalBytes != null
+    //             ? loadingProgress.cumulativeBytesLoaded /
+    //                 loadingProgress.expectedTotalBytes!
+    //             : null,
+    //       ),
+    //     );
+    //   },
+    //   errorBuilder: (context, error, stackTrace) {
+    //     return Container(
+    //       color: Colors.grey[900],
+    //       child: Center(
+    //         child: Text(
+    //           'Page ${page['page_num']}',
+    //           style: TextStyle(color: Colors.white),
+    //         ),
+    //       ),
+    //     );
+    //   },
+    // );
+  }
+
+  Widget _buildMenu() {
+    return AnimatedOpacity(
+      opacity: isMenuVisible ? 1.0 : 0.0,
+      duration: Duration(milliseconds: 200),
+      child: Container(
+        color: Colors.black54,
+        child: Column(
+          children: [
+            // 상단 메뉴
+            Container(
+              color: Colors.black87,
+              child: SafeArea(
+                bottom: false,
+                child: Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.arrow_back, color: Colors.white),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.bookTitle,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                            ),
+                          ),
+                          Text(
+                            '${widget.episode}화 - ${currentPage + 1}/${pages.length}',
+                            style: TextStyle(
+                              color: Colors.grey[400],
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        currentMode == ViewMode.vertical
+                            ? Icons.view_column
+                            : Icons.view_agenda,
+                        color: Colors.white,
+                      ),
+                      onPressed: _switchViewMode,
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.settings, color: Colors.white),
+                      onPressed: () {
+                        // 설정 메뉴
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            Spacer(),
+
+            // 하단 컨트롤
+            Container(
+              color: Colors.black87,
+              child: SafeArea(
+                top: false,
+                child: Column(
+                  children: [
+                    // 페이지 슬라이더
+                    Slider(
+                      value: currentPage.toDouble(),
+                      min: 0,
+                      max: (pages.length - 1).toDouble(),
+                      divisions: pages.length - 1,
+                      activeColor: AppColors.primaryRed,
+                      onChanged: (value) {
+                        setState(() {
+                          currentPage = value.toInt();
+                        });
+
+                        if (currentMode == ViewMode.horizontal && pageController != null) {
+                          pageController!.jumpToPage(currentPage);
+                        } else if (scrollController != null) {
+                          scrollController!.jumpTo(
+                            currentPage * MediaQuery.of(context).size.height,
+                          );
+                        }
+                      },
+                    ),
+
+                    // 컨트롤 버튼들
+                    if (currentMode == ViewMode.horizontal)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.skip_previous, color: Colors.white),
+                            onPressed: currentPage > 0 ? _previousPage : null,
+                          ),
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                            decoration: BoxDecoration(
+                              color: Colors.white24,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              '${currentPage + 1} / ${pages.length}',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.skip_next, color: Colors.white),
+                            onPressed: currentPage < pages.length - 1 ? _nextPage : null,
+                          ),
+                        ],
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Stack(
-        children: [
-          // 만화 뷰어
-          GestureDetector(
-            onTapDown: _handleTap,
-            child: AnimatedBuilder(
-              animation: _animationController,
-              builder: (context, child) {
-                if (_animation != null) {
-                  _transformController.value = _animation!.value;
-                }
-                return InteractiveViewer(
-                  transformationController: _transformController,
-                  minScale: 0.5,
-                  maxScale: 4.0,
-                  panEnabled: false, // 터치로 패닝 비활성화
-                  scaleEnabled: false, // 핀치 줌 비활성화
-                  child: child!,
-                );
-              },
-              child: _buildComicImage(),
-            ),
-          ),
-
-          // 상단 UI (타이틀, 페이지 정보)
-          if (showUI)
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: _buildTopBar(),
-            ),
-
-          // 하단 UI (네비게이션)
-          if (showUI)
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: _buildBottomBar(),
-            ),
-        ],
-      ),
-    );
-  }
-
-  /// 만화 이미지 (샘플은 컬러 박스로 대체)
-  Widget _buildComicImage() {
-    final page = comicBook.pages[currentPageIndex];
-
-    return Container(
-      width: 800,
-      height: 1000,
-      color: Colors.grey[900],
-      child: Stack(
-        children: [
-          // 페이지 배경
-          Center(
-            child: Text(
-              'Page ${currentPageIndex + 1}',
-              style: const TextStyle(
-                color: Colors.white30,
-                fontSize: 48,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-
-          // 패널 경계선 표시 (디버깅용)
-          ...page.frames.asMap().entries.map((entry) {
-            final index = entry.key;
-            final frame = entry.value;
-            final isCurrentFrame = index == currentFrameIndex;
-
-            return Positioned(
-              left: frame.x,
-              top: frame.y,
-              width: frame.width,
-              height: frame.height,
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: isCurrentFrame ? Colors.red : Colors.blue.withOpacity(0.5),
-                    width: isCurrentFrame ? 3 : 1,
-                  ),
-                ),
-                child: Center(
-                  child: Text(
-                    'Frame ${index + 1}',
-                    style: TextStyle(
-                      color: isCurrentFrame ? Colors.red : Colors.blue,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-            );
-          }),
-        ],
-      ),
-    );
-  }
-
-  /// 상단 바
-  Widget _buildTopBar() {
-    return Container(
-      padding: EdgeInsets.only(
-        top: MediaQuery.of(context).padding.top + 8,
-        left: 16,
-        right: 16,
-        bottom: 8,
-      ),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Colors.black.withOpacity(0.7),
-            Colors.transparent,
-          ],
+      body: isLoading
+          ? Center(
+        child: CircularProgressIndicator(
+          color: AppColors.primaryRed,
         ),
-      ),
-      child: Row(
+      )
+          : Stack(
         children: [
-          IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => Navigator.pop(context),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              'Action Viewer Demo',
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+          // 메인 뷰어
+          currentMode == ViewMode.vertical
+              ? _buildVerticalViewer()
+              : _buildHorizontalViewer(),
+
+          // 메뉴 오버레이
+          if (isMenuVisible)
+            Positioned.fill(
+              child: _buildMenu(),
             ),
-          ),
-          Text(
-            'Page ${currentPageIndex + 1}/${comicBook.pages.length}',
-            style: const TextStyle(color: Colors.white70),
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// 하단 바
-  Widget _buildBottomBar() {
-    final currentPage = comicBook.pages[currentPageIndex];
-
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.bottomCenter,
-          end: Alignment.topCenter,
-          colors: [
-            Colors.black.withOpacity(0.7),
-            Colors.transparent,
-          ],
-        ),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // 프레임 진행 표시
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(
-              currentPage.frames.length,
-                  (index) => Container(
-                margin: const EdgeInsets.symmetric(horizontal: 4),
-                width: 8,
-                height: 8,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: index == currentFrameIndex
-                      ? Colors.red
-                      : Colors.white.withOpacity(0.5),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
-
-          // 컨트롤 버튼
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              IconButton(
-                icon: const Icon(Icons.skip_previous, color: Colors.white),
-                iconSize: 32,
-                onPressed: _previousFrame,
-              ),
-              Text(
-                'Frame ${currentFrameIndex + 1}/${currentPage.frames.length}',
-                style: const TextStyle(color: Colors.white, fontSize: 16),
-              ),
-              IconButton(
-                icon: const Icon(Icons.skip_next, color: Colors.white),
-                iconSize: 32,
-                onPressed: _nextFrame,
-              ),
-            ],
-          ),
-
-          // 도움말
-          const SizedBox(height: 8),
-          const Text(
-            '← 이전 | 중앙 탭하여 UI 숨기기 | 다음 →',
-            style: TextStyle(color: Colors.white60, fontSize: 12),
-          ),
         ],
       ),
     );

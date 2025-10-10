@@ -60,7 +60,7 @@ class _SplashScreenState extends State<SplashScreen>
       // 토큰 없음 → 로그인으로
       print('No token found, navigating to login');
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const LoginScreen()),
+        MaterialPageRoute(builder: (context) =>  LoginScreen()),
       );
     }
   }

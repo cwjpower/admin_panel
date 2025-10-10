@@ -1,34 +1,25 @@
-// lib/models/banner.dart
-
-class AppBanner {
-  final String id;
-  final String imageUrl;
+class Banner {
+  final int id;
   final String title;
-  final String? link;
+  final String image;
+  final String link;
+  final int order;
 
-  AppBanner({
+  Banner({
     required this.id,
-    required this.imageUrl,
     required this.title,
-    this.link,
+    required this.image,
+    required this.link,
+    required this.order,
   });
 
-  // JSON 변환 메서드 추가 (API 연동 시 필요)
-  factory AppBanner.fromJson(Map<String, dynamic> json) {
-    return AppBanner(
-      id: json['id'] ?? '',
-      imageUrl: json['image_url'] ?? '',
+  factory Banner.fromJson(Map<String, dynamic> json) {
+    return Banner(
+      id: json['id'] ?? 0,
       title: json['title'] ?? '',
-      link: json['link'],
+      image: json['image'] ?? 'https://via.placeholder.com/800x300',
+      link: json['link'] ?? '',
+      order: json['order'] ?? 0,
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'image_url': imageUrl,
-      'title': title,
-      'link': link,
-    };
   }
 }

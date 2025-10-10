@@ -1,2 +1,1 @@
-# HeroComics App
-Flutter/Android 프로젝트
+HeroComics Flutter App

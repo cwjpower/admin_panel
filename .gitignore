@@ -1,12 +1,33 @@
-**/build/
-**/.gradle/
-**/.idea/
-**/.vscode/
-.dart_tool/
-ios/Pods/
-.flutter-plugins-dependencies
-**/build/
-.dart_tool/
-**/.idea/
-**/.vscode/
-ios/Pods/
+# Flutter
+/.dart_tool/
+/.buildlog/
+/build/
+/.ideas/        # 오타 방지용
+/ios/Flutter/Flutter.podspec
+/ios/Pods/
+/android/.gradle/
+/android/app/release
+/macos/Flutter/ephemeral/
+/linux/flutter/
+/windows/flutter/
+/web/.dart_tool/
+
+# IDE
+/.idea/
+/.vscode/
+/*.code-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+*.keystore
+*.jks
+*.p12
+*.pem
+*.key
+*.crt
+
+# Generated
+**/*.lock.hive

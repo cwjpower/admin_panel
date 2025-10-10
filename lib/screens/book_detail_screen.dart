@@ -1,9 +1,9 @@
-// lib/screens/book_detail_screen.dart
-
 import 'package:flutter/material.dart';
 import '../models/book.dart';
-import '../models/review.dart';
 import '../utils/colors.dart';
+import '../services/api_service.dart';
+import '../services/storage_service.dart';
+import 'action_viewer_screen.dart';
 
 class BookDetailScreen extends StatefulWidget {
   final Book book;
@@ -15,28 +15,32 @@ class BookDetailScreen extends StatefulWidget {
 }
 
 class _BookDetailScreenState extends State<BookDetailScreen> {
+  bool isFavorite = false;
   bool isInCart = false;
-  bool isWishlisted = false;
+  int selectedVolume = 1;
+  List<int> ownedVolumes = []; // 구매한 권수
+  List<Book> recommendedBooks = [];
 
-  // Mock reviews - 늦은 초기화로 widget.book.id 사용
-  late final List<Review> reviews = [
-    Review(
-      id: '1',
-      userName: 'John Doe',
-      rating: 5,
-      comment: 'Amazing comic! The artwork is stunning and the story is captivating.',
-      date: DateTime.now().subtract(Duration(days: 2)),
-      bookId: widget.book.id,
-    ),
-    Review(
-      id: '2',
-      userName: 'Jane Smith',
-      rating: 4,
-      comment: 'Great read, though the pacing could be better in some parts.',
-      date: DateTime.now().subtract(Duration(days: 5)),
-      bookId: widget.book.id,
-    ),
-  ];
+  // 탭 관련
+  final List<String> tabs = ['작품정보', '회차정보', '리뷰'];
+  int selectedTabIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadBookDetails();
+  }
+
+  Future<void> _loadBookDetails() async {
+    // TODO: 실제 API 호출
+    // 추천 작품 로드
+    try {
+      recommendedBooks = await ApiService.fetchBooks(category: 'recommended');
+      setState(() {});
+    } catch (e) {
+      print('Error loading recommendations: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,433 +48,552 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
       backgroundColor: Colors.white,
       body: CustomScrollView(
         slivers: [
-          _buildAppBar(),
-          _buildBookInfo(),
-          _buildDescription(),
-          _buildReviews(),
+          // 커스텀 앱바
+          SliverAppBar(
+            expandedHeight: 300,
+            pinned: true,
+            backgroundColor: Colors.black,
+            flexibleSpace: FlexibleSpaceBar(
+              background: Stack(
+                fit: StackFit.expand,
+                children: [
+                  // 배경 이미지 (블러 처리)
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.black.withOpacity(0.3),
+                          Colors.black.withOpacity(0.8),
+                        ],
+                      ),
+                    ),
+                  ),
+                  // 책 표지
+                  Center(
+                    child: Container(
+                      width: 150,
+                      height: 200,
+                      decoration: BoxDecoration(
+                        color: _getBookColor(),
+                        borderRadius: BorderRadius.circular(8),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.5),
+                            blurRadius: 20,
+                            offset: Offset(0, 10),
+                          ),
+                        ],
+                      ),
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.book, color: Colors.white, size: 50),
+                            SizedBox(height: 8),
+                            Text(
+                              widget.book.title,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () => Navigator.pop(context),
+            ),
+            actions: [
+              IconButton(
+                icon: Icon(
+                  isFavorite ? Icons.favorite : Icons.favorite_border,
+                  color: isFavorite ? Colors.red : Colors.white,
+                ),
+                onPressed: () {
+                  setState(() {
+                    isFavorite = !isFavorite;
+                  });
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.share, color: Colors.white),
+                onPressed: () {
+                  // TODO: 공유 기능
+                },
+              ),
+            ],
+          ),
+
+          // 책 기본 정보
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // 제목과 작가
+                  Text(
+                    widget.book.title,
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textDark,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    widget.book.author,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: AppColors.textGrey,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+
+                  // 평점과 정보
+                  Row(
+                    children: [
+                      // 평점
+                      Row(
+                        children: [
+                          ...List.generate(5, (index) {
+                            return Icon(
+                              index < widget.book.rating.floor()
+                                  ? Icons.star
+                                  : Icons.star_border,
+                              color: Colors.orange,
+                              size: 16,
+                            );
+                          }),
+                          SizedBox(width: 4),
+                          Text(
+                            '${widget.book.rating}',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            ' (${widget.book.reviewCount})',
+                            style: TextStyle(
+                              color: AppColors.textGrey,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(width: 16),
+                      // 연재 상태
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: Colors.green,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          '연재중',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  SizedBox(height: 16),
+
+                  // 가격 정보
+                  Container(
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[100],
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('회당 구매'),
+                            Text(
+                              '₩${widget.book.price}',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Divider(),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('전권 구매 (30% 할인)'),
+                            Text(
+                              '₩${(int.parse(widget.book.price) * 10 * 0.7).toInt()}',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.primaryRed,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  SizedBox(height: 16),
+
+                  // 액션 버튼들
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            // Action Viewer로 이동 (첫화 무료)
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ActionViewerScreen(
+                                  bookId: widget.book.id,
+                                  episode: 1,  // 첫 화
+                                  bookTitle: widget.book.title,
+                                  mode: ViewMode.vertical,
+                                ),
+                              ),
+                            );
+                          },
+                          icon: Icon(Icons.visibility),
+                          label: Text('첫화 무료'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.grey[800],
+                            padding: EdgeInsets.symmetric(vertical: 12),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            setState(() {
+                              isInCart = !isInCart;
+                            });
+                          },
+                          icon: Icon(
+                            isInCart ? Icons.shopping_cart : Icons.add_shopping_cart,
+                          ),
+                          label: Text(isInCart ? '담김' : '담기'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: isInCart ? Colors.grey : AppColors.primaryRed,
+                            padding: EdgeInsets.symmetric(vertical: 12),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  SizedBox(height: 24),
+
+                  // 탭 메뉴
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(color: Colors.grey[300]!),
+                      ),
+                    ),
+                    child: Row(
+                      children: List.generate(tabs.length, (index) {
+                        final isSelected = selectedTabIndex == index;
+                        return Expanded(
+                          child: InkWell(
+                            onTap: () {
+                              setState(() {
+                                selectedTabIndex = index;
+                              });
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(vertical: 16),
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(
+                                    color: isSelected
+                                        ? AppColors.primaryRed
+                                        : Colors.transparent,
+                                    width: 2,
+                                  ),
+                                ),
+                              ),
+                              child: Text(
+                                tabs[index],
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: isSelected
+                                      ? AppColors.primaryRed
+                                      : AppColors.textGrey,
+                                  fontWeight: isSelected
+                                      ? FontWeight.bold
+                                      : FontWeight.normal,
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
+                    ),
+                  ),
+
+                  SizedBox(height: 16),
+
+                  // 탭 콘텐츠
+                  if (selectedTabIndex == 0) _buildInfoTab(),
+                  if (selectedTabIndex == 1) _buildEpisodesTab(),
+                  if (selectedTabIndex == 2) _buildReviewsTab(),
+
+                  SizedBox(height: 24),
+
+                  // 추천 작품
+                  Text(
+                    '이 작품과 비슷한 만화',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textDark,
+                    ),
+                  ),
+                  SizedBox(height: 12),
+                  Container(
+                    height: 180,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: 5,
+                      itemBuilder: (context, index) {
+                        return _buildRecommendedBook(index);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
-      bottomNavigationBar: _buildBottomBar(),
     );
   }
 
-  Widget _buildAppBar() {
-    return SliverAppBar(
-      expandedHeight: 400,
-      pinned: true,
-      backgroundColor: AppColors.primary,
-      flexibleSpace: FlexibleSpaceBar(
-        background: Stack(
-          fit: StackFit.expand,
-          children: [
-            Image.network(
-              widget.book.coverImage,
-              fit: BoxFit.cover,
-            ),
-            Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.transparent,
-                    Colors.black.withOpacity(0.7),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-      leading: IconButton(
-        icon: Container(
-          padding: EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.9),
-            shape: BoxShape.circle,
+  Widget _buildInfoTab() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '작품 소개',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
           ),
-          child: Icon(Icons.arrow_back, color: AppColors.textDark, size: 20),
         ),
-        onPressed: () => Navigator.pop(context),
-      ),
-      actions: [
-        IconButton(
-          icon: Container(
-            padding: EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.9),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              isWishlisted ? Icons.favorite : Icons.favorite_border,
-              color: isWishlisted ? Colors.red : AppColors.textDark,
-              size: 20,
-            ),
+        SizedBox(height: 8),
+        Text(
+          widget.book.description == null || widget.book.description!.isEmpty
+              ? '최강의 닌자를 꿈꾸는 소년 나루토의 성장 스토리! 닌자 아카데미 졸업 후 사스케, 사쿠라와 함께 팀을 이뤄 다양한 임무를 수행하며 성장해나가는 이야기.'
+              : widget.book.description!,
+          style: TextStyle(
+            color: AppColors.textGrey,
+            height: 1.5,
           ),
-          onPressed: () {
-            setState(() {
-              isWishlisted = !isWishlisted;
-            });
-          },
         ),
-        IconButton(
-          icon: Container(
-            padding: EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.9),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(Icons.share, color: AppColors.textDark, size: 20),
-          ),
-          onPressed: () {},
-        ),
+        SizedBox(height: 16),
+        _buildInfoRow('장르', '소년만화, 액션, 판타지'),
+        _buildInfoRow('연재처', 'Weekly Jump'),
+        _buildInfoRow('연재 시작', '2019.01.01'),
+        _buildInfoRow('총 화수', '350화'),
       ],
     );
   }
 
-  Widget _buildBookInfo() {
-    return SliverToBoxAdapter(
-      child: Container(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                if (widget.book.isNew)
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: Text(
-                      'NEW',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                if (widget.book.isNew) SizedBox(width: 8),
-                if (widget.book.isFree)
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Colors.green,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: Text(
-                      'FREE',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-            SizedBox(height: 12),
-            Text(
-              widget.book.title,
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textDark,
-              ),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'by ${widget.book.author}',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey[600],
-              ),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'Publisher: ${widget.book.publisher}',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey[600],
-              ),
-            ),
-            SizedBox(height: 16),
-            Row(
-              children: [
-                Row(
-                  children: List.generate(5, (index) {
-                    return Icon(
-                      index < widget.book.rating.floor()
-                          ? Icons.star
-                          : index < widget.book.rating
-                          ? Icons.star_half
-                          : Icons.star_border,
-                      color: Colors.amber,
-                      size: 20,
-                    );
-                  }),
-                ),
-                SizedBox(width: 8),
-                Text(
-                  widget.book.rating.toStringAsFixed(1),
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(width: 8),
-                Text(
-                  '(${widget.book.reviewCount} reviews)',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[600],
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 16),
-            Row(
-              children: [
-                Text(
-                  '\$${widget.book.price}',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.primary,
-                  ),
-                ),
-                Spacer(),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(Icons.remove_red_eye, size: 16),
-                      SizedBox(width: 4),
-                      Text('Preview'),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  Widget _buildEpisodesTab() {
+    return Column(
+      children: List.generate(10, (index) {
+        final episodeNum = 10 - index;
+        final isOwned = ownedVolumes.contains(episodeNum);
 
-  Widget _buildDescription() {
-    return SliverToBoxAdapter(
-      child: Container(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Description',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textDark,
-              ),
+        return ListTile(
+          contentPadding: EdgeInsets.zero,
+          leading: Container(
+            width: 60,
+            height: 80,
+            decoration: BoxDecoration(
+              color: _getBookColor().withOpacity(0.8),
+              borderRadius: BorderRadius.circular(4),
             ),
-            SizedBox(height: 8),
-            Text(
-              widget.book.description ?? 'No description available for this comic.',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey[700],
-                height: 1.5,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildReviews() {
-    return SliverToBoxAdapter(
-      child: Container(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Text(
-                  'Reviews',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textDark,
-                  ),
-                ),
-                Spacer(),
-                TextButton(
-                  onPressed: () {},
-                  child: Text(
-                    'See All',
-                    style: TextStyle(color: AppColors.primary),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 8),
-            ...reviews.map((review) => _buildReviewCard(review)),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildReviewCard(Review review) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 16),
-      padding: EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.grey[50],
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[200]!),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              CircleAvatar(
-                backgroundColor: AppColors.primary,
-                child: Text(
-                  review.userName[0].toUpperCase(),
-                  style: TextStyle(color: Colors.white),
+            child: Center(
+              child: Text(
+                '$episodeNum화',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(width: 8),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      review.userName,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        ...List.generate(5, (index) {
-                          return Icon(
-                            index < review.rating
-                                ? Icons.star
-                                : Icons.star_border,
-                            color: Colors.amber,
-                            size: 14,
-                          );
-                        }),
-                        SizedBox(width: 8),
-                        Text(
-                          _getTimeAgo(review.date),
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 8),
-          Text(
-            review.comment,
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[700],
             ),
           ),
-        ],
-      ),
-    );
-  }
-
-  String _getTimeAgo(DateTime date) {
-    final difference = DateTime.now().difference(date);
-    if (difference.inDays > 0) {
-      return '${difference.inDays} days ago';
-    } else if (difference.inHours > 0) {
-      return '${difference.inHours} hours ago';
-    } else {
-      return 'Just now';
-    }
-  }
-
-  Widget _buildBottomBar() {
-    return Container(
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            offset: Offset(0, -2),
-            blurRadius: 8,
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          IconButton(
-            icon: Icon(
-              isInCart ? Icons.shopping_cart : Icons.shopping_cart_outlined,
-              color: isInCart ? AppColors.primary : Colors.grey,
-            ),
+          title: Text('제 $episodeNum화'),
+          subtitle: Text('2024.${12 - index}.01'),
+          trailing: isOwned
+              ? ElevatedButton(
             onPressed: () {
-              setState(() {
-                isInCart = !isInCart;
-              });
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    isInCart
-                        ? 'Added to cart'
-                        : 'Removed from cart',
+              // Action Viewer로 읽기
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ActionViewerScreen(
+                    bookId: widget.book.id,
+                    episode: episodeNum,
+                    bookTitle: widget.book.title,
+                    mode: ViewMode.vertical,
                   ),
-                  duration: Duration(seconds: 2),
                 ),
               );
             },
+            child: Text('읽기'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.green,
+            ),
+          )
+              : Text(
+            '₩${widget.book.price}',
+            style: TextStyle(
+              color: AppColors.primaryRed,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-          SizedBox(width: 16),
-          Expanded(
-            child: ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                padding: EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
+        );
+      }),
+    );
+  }
+
+  Widget _buildReviewsTab() {
+    return Column(
+      children: List.generate(5, (index) {
+        return Container(
+          margin: EdgeInsets.only(bottom: 16),
+          padding: EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: Colors.grey[50],
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  CircleAvatar(
+                    radius: 16,
+                    backgroundColor: Colors.grey[400],
+                    child: Icon(Icons.person, size: 16, color: Colors.white),
+                  ),
+                  SizedBox(width: 8),
+                  Text(
+                    '독자${index + 1}',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  Spacer(),
+                  ...List.generate(5, (i) {
+                    return Icon(
+                      i < 4 ? Icons.star : Icons.star_border,
+                      size: 12,
+                      color: Colors.orange,
+                    );
+                  }),
+                ],
               ),
-              child: Text(
-                'Read Now',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+              SizedBox(height: 8),
+              Text(
+                '정말 재미있게 읽고 있습니다! 다음 화가 기다려져요.',
+                style: TextStyle(fontSize: 13),
+              ),
+            ],
+          ),
+        );
+      }),
+    );
+  }
+
+  Widget _buildInfoRow(String label, String value) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 80,
+            child: Text(
+              label,
+              style: TextStyle(
+                color: AppColors.textGrey,
               ),
             ),
+          ),
+          Expanded(
+            child: Text(value),
           ),
         ],
       ),
     );
+  }
+
+  Widget _buildRecommendedBook(int index) {
+    final colors = [
+      Colors.blue[400]!,
+      Colors.red[400]!,
+      Colors.green[400]!,
+      Colors.orange[400]!,
+      Colors.purple[400]!,
+    ];
+
+    return Container(
+      width: 100,
+      margin: EdgeInsets.only(right: 12),
+      child: Column(
+        children: [
+          Container(
+            height: 130,
+            decoration: BoxDecoration(
+              color: colors[index % 5],
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Center(
+              child: Icon(Icons.book, color: Colors.white, size: 30),
+            ),
+          ),
+          SizedBox(height: 4),
+          Text(
+            '추천작품 ${index + 1}',
+            style: TextStyle(fontSize: 12),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Color _getBookColor() {
+    final bookIdInt = int.tryParse(widget.book.id) ?? 0;
+    final colors = [
+      Colors.red[400]!,
+      Colors.blue[400]!,
+      Colors.green[400]!,
+      Colors.orange[400]!,
+      Colors.purple[400]!,
+    ];
+    return colors[bookIdInt % 5];
   }
 }
