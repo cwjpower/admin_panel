@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import 'package:flutter/material.dart';
 import 'services/admin_api_service.dart';
 import 'screens/book_upload_screens.dart';
@@ -786,7 +785,8 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
             padding: const EdgeInsets.all(24),
             child: Card(
               elevation: 8,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16)),
               child: Container(
                 width: 450,
                 padding: const EdgeInsets.all(40),
@@ -795,24 +795,31 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.admin_panel_settings, size: 80, color: Colors.red.shade700),
+                      Icon(Icons.admin_panel_settings, size: 80,
+                          color: Colors.red.shade700),
                       const SizedBox(height: 16),
-                      Text('HERO COMICS', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.red.shade700)),
+                      Text('HERO COMICS',
+                          style: TextStyle(fontSize: 28, fontWeight: FontWeight
+                              .bold, color: Colors.red.shade700)),
                       const SizedBox(height: 8),
-                      Text('Admin Panel', style: TextStyle(fontSize: 16, color: Colors.grey.shade600)),
+                      Text('Admin Panel',
+                          style: TextStyle(fontSize: 16, color: Colors.grey
+                              .shade600)),
                       const SizedBox(height: 40),
                       TextFormField(
                         controller: _emailController,
                         decoration: InputDecoration(
                           labelText: '이메일',
                           prefixIcon: const Icon(Icons.email_outlined),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12)),
                           filled: true,
                           fillColor: Colors.grey.shade50,
                         ),
                         keyboardType: TextInputType.emailAddress,
                         validator: (value) {
-                          if (value == null || value.isEmpty) return '이메일을 입력해주세요';
+                          if (value == null || value.isEmpty)
+                            return '이메일을 입력해주세요';
                           if (!value.contains('@')) return '올바른 이메일 형식이 아닙니다';
                           return null;
                         },
@@ -824,16 +831,22 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                           labelText: '비밀번호',
                           prefixIcon: const Icon(Icons.lock_outlined),
                           suffixIcon: IconButton(
-                            icon: Icon(_obscurePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined),
-                            onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                            icon: Icon(_obscurePassword
+                                ? Icons.visibility_outlined
+                                : Icons.visibility_off_outlined),
+                            onPressed: () =>
+                                setState(() =>
+                                _obscurePassword = !_obscurePassword),
                           ),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12)),
                           filled: true,
                           fillColor: Colors.grey.shade50,
                         ),
                         obscureText: _obscurePassword,
                         validator: (value) {
-                          if (value == null || value.isEmpty) return '비밀번호를 입력해주세요';
+                          if (value == null || value.isEmpty)
+                            return '비밀번호를 입력해주세요';
                           return null;
                         },
                       ),
@@ -846,11 +859,16 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.red.shade700,
                             foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12)),
                           ),
                           child: _isLoading
-                              ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                              : const Text('로그인', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                              ? const SizedBox(height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                  strokeWidth: 2, color: Colors.white))
+                              : const Text('로그인', style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold)),
                         ),
                       ),
                       const SizedBox(height: 16),
@@ -866,15 +884,24 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                           children: [
                             Row(
                               children: [
-                                Icon(Icons.info_outline, size: 16, color: Colors.blue.shade700),
+                                Icon(Icons.info_outline, size: 16,
+                                    color: Colors.blue.shade700),
                                 const SizedBox(width: 8),
-                                Text('테스트 계정', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue.shade700)),
+                                Text('테스트 계정', style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.blue.shade700)),
                               ],
                             ),
                             const SizedBox(height: 8),
-                            Text('슈퍼: admin@herocomics.com / admin1234', style: TextStyle(fontSize: 11, color: Colors.blue.shade900)),
-                            Text('Marvel: marvel@herocomics.com / marvel1234', style: TextStyle(fontSize: 11, color: Colors.blue.shade900)),
-                            Text('DC: dc@herocomics.com / dc1234', style: TextStyle(fontSize: 11, color: Colors.blue.shade900)),
+                            Text('슈퍼: admin@herocomics.com / admin1234',
+                                style: TextStyle(
+                                    fontSize: 11, color: Colors.blue.shade900)),
+                            Text('Marvel: marvel@herocomics.com / marvel1234',
+                                style: TextStyle(
+                                    fontSize: 11, color: Colors.blue.shade900)),
+                            Text('DC: dc@herocomics.com / dc1234',
+                                style: TextStyle(
+                                    fontSize: 11, color: Colors.blue.shade900)),
                           ],
                         ),
                       ),
@@ -888,35 +915,4 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
       ),
     );
   }
-=======
-import 'package:flutter/material.dart';
-import 'screens/splash_screen.dart';  // 추가!
-import 'screens/login_screen.dart';
-import 'screens/home_screen.dart';
-
-void main() {
-  print("App starting...");
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Hero Comics',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.amber),
-      ),
-      home: const SplashScreen(),  // ← 여기 변경!
-      debugShowCheckedModeBanner: false,
-      routes: {
-        '/home': (context) => const HomeScreen(),
-        '/login': (context) => const LoginScreen(),
-      },
-    );
-  }
->>>>>>> 9084b6b (chore: initial commit (herocomics_app))
 }
