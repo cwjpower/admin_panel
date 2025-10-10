@@ -1,20 +1,33 @@
-# PHP / Admin Panel
+# --- Flutter ---
+/.dart_tool/
+/.buildlog/
+/build/
+/pubspec.lock
+/android/.gradle/
+/android/.idea/
+/ios/Pods/
+/linux/flutter/
+/macos/Flutter/ephemeral/
+/windows/flutter/
+/web/.dart_tool/
+/**/*.lock
+
+# --- IDE ---
+/.vscode/
+/.idea/
+/*.code-workspace
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+
+# --- PHP(Admin) ---
 /vendor/
 /node_modules/
 /composer.lock
 .env
 .env.*
-.DS_Store
-Thumbs.db
-*.log
-# IDE
-/.idea/
-/.vscode/
-/*.code-workspace
-# Cache/Artifacts
 /cache/
 /storage/
-/build/
 /dist/
-# Uploads(원하면 빼고 올려)
 /uploads/
