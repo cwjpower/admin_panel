@@ -1,7 +1,0 @@
-.skin-blue .sidebar-menu>li.header { color: #fff; font-size: 15px; }
-.ls-table td.item-label { font-weight: bold; background-color: #d2d6de; color: #222d32; text-align: center; }
-.ls-user-logs { max-height: 800px; overflow-y: auto; } /* 회원 상세 로그 박스 */
-.pagination a { cursor: pointer; }
-#tree { min-height: 200px; }
-.ls-book-category { height: 250px; overflow-y: auto; cursor: pointer; }
-.pd-10 { padding: 10px; }
