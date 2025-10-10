@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'services/admin_api_service.dart';
 import 'screens/book_upload_screens.dart';
 
-
 void main() {
   runApp(const AdminApp());
 }
@@ -581,25 +580,7 @@ class BooksManageScreen extends StatelessWidget {
   }
 }
 
-class SeriesManageScreen extends StatelessWidget {
-  const SeriesManageScreen({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.collections_bookmark, size: 64, color: Colors.green.shade400),
-          const SizedBox(height: 16),
-          const Text('시리즈 관리', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 8),
-          const Text('원피스, 나루토 등 시리즈별 권 관리'),
-        ],
-      ),
-    );
-  }
-}
+// SeriesManageScreen은 book_upload_screens.dart에서 import됨!
 
 class UsersManageScreen extends StatelessWidget {
   const UsersManageScreen({Key? key}) : super(key: key);

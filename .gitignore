@@ -1,33 +1,29 @@
-# --- Flutter ---
-/.dart_tool/
-/.buildlog/
-/build/
-/pubspec.lock
-/android/.gradle/
-/android/.idea/
-/ios/Pods/
-/linux/flutter/
-/macos/Flutter/ephemeral/
-/windows/flutter/
-/web/.dart_tool/
-/**/*.lock
-
-# --- IDE ---
-/.vscode/
-/.idea/
-/*.code-workspace
-
-# --- OS ---
-.DS_Store
+# OS/IDE
 Thumbs.db
+.DS_Store
+.vscode/
+.idea/
 
-# --- PHP(Admin) ---
-/vendor/
-/node_modules/
-/composer.lock
+# PHP/Composer
+vendor/
+composer.lock
+
+# Node
+node_modules/
+dist/
+build/
+
+# Private
 .env
-.env.*
-/cache/
-/storage/
-/dist/
-/uploads/
+*.key
+*.pem
+
+# Logs/Dumps
+*.log
+*.sql
+*.sql.gz
+
+# Uploads
+uploads/
+upload/
+static/uploads/

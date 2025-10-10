@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../services/admin_api_service.dart';
 
 // ========================================
 // 시리즈 관리 화면 (완전판)
@@ -27,33 +28,28 @@ class _SeriesManageScreenState extends State<SeriesManageScreen> {
   Future<void> _loadSeries() async {
     setState(() => _isLoading = true);
 
-    // TODO: API 호출
-    // 임시 데이터
-    await Future.delayed(const Duration(seconds: 1));
+    try {
+      final response = await AdminApiService.getSeriesList();
 
-    setState(() {
-      _seriesList = [
-        {
-          'series_id': 1,
-          'series_name': '스파이더맨',
-          'series_name_en': 'Spider-Man',
-          'author': 'Stan Lee',
-          'publisher_name': 'Marvel Comics',
-          'total_volumes': 2,
-          'status': 'ongoing'
-        },
-        {
-          'series_id': 2,
-          'series_name': '아이언맨',
-          'series_name_en': 'Iron Man',
-          'author': 'Stan Lee',
-          'publisher_name': 'Marvel Comics',
-          'total_volumes': 0,
-          'status': 'ongoing'
-        },
-      ];
-      _isLoading = false;
-    });
+      if (response['code'] == 0) {
+        setState(() {
+          _seriesList = List<Map<String, dynamic>>.from(response['data']);
+          _isLoading = false;
+        });
+      } else {
+        _showError(response['msg'] ?? '시리즈 목록을 불러올 수 없습니다');
+        setState(() => _isLoading = false);
+      }
+    } catch (e) {
+      _showError('오류: $e');
+      setState(() => _isLoading = false);
+    }
+  }
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: Colors.red),
+    );
   }
 
   void _showAddSeriesDialog() {
@@ -162,7 +158,7 @@ class _SeriesManageScreenState extends State<SeriesManageScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    series['series_name'],
+                    series['series_name'] ?? '',
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -190,7 +186,7 @@ class _SeriesManageScreenState extends State<SeriesManageScreen> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
-                          '${series['total_volumes']}권',
+                          '${series['actual_volumes'] ?? series['total_volumes'] ?? 0}권',
                           style: TextStyle(
                             fontSize: 12,
                             color: Colors.blue.shade700,
@@ -240,21 +236,62 @@ class AddSeriesDialog extends StatefulWidget {
 class _AddSeriesDialogState extends State<AddSeriesDialog> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
+  final _nameEnController = TextEditingController();
   final _authorController = TextEditingController();
+  final _descriptionController = TextEditingController();
   String _category = 'MARVEL';
+  bool _isLoading = false;
 
   @override
   void dispose() {
     _nameController.dispose();
+    _nameEnController.dispose();
     _authorController.dispose();
+    _descriptionController.dispose();
     super.dispose();
   }
 
-  void _submit() {
-    if (_formKey.currentState!.validate()) {
-      // TODO: API 호출
-      Navigator.pop(context, true);
+  Future<void> _submit() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => _isLoading = true);
+
+    try {
+      final response = await AdminApiService.addSeries(
+        seriesName: _nameController.text,
+        seriesNameEn: _nameEnController.text.isEmpty ? null : _nameEnController.text,
+        author: _authorController.text.isEmpty ? null : _authorController.text,
+        category: _category,
+        description: _descriptionController.text.isEmpty ? null : _descriptionController.text,
+        status: 'ongoing',
+      );
+
+      if (response['code'] == 0) {
+        if (mounted) {
+          Navigator.pop(context, true);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('시리즈가 추가되었습니다'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      } else {
+        _showError(response['msg'] ?? '시리즈 추가 실패');
+      }
+    } catch (e) {
+      _showError('오류: $e');
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
+  }
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: Colors.red),
+    );
   }
 
   @override
@@ -270,10 +307,18 @@ class _AddSeriesDialogState extends State<AddSeriesDialog> {
               TextFormField(
                 controller: _nameController,
                 decoration: const InputDecoration(
-                  labelText: '시리즈명',
+                  labelText: '시리즈명 *',
                   hintText: '예: 스파이더맨',
                 ),
                 validator: (v) => v?.isEmpty ?? true ? '필수 입력' : null,
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _nameEnController,
+                decoration: const InputDecoration(
+                  labelText: '영문명',
+                  hintText: '예: Spider-Man',
+                ),
               ),
               const SizedBox(height: 16),
               TextFormField(
@@ -296,18 +341,33 @@ class _AddSeriesDialogState extends State<AddSeriesDialog> {
                 ],
                 onChanged: (v) => setState(() => _category = v!),
               ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _descriptionController,
+                decoration: const InputDecoration(
+                  labelText: '설명',
+                  hintText: '시리즈 설명을 입력하세요',
+                ),
+                maxLines: 3,
+              ),
             ],
           ),
         ),
       ),
       actions: [
         TextButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: _isLoading ? null : () => Navigator.pop(context),
           child: const Text('취소'),
         ),
         ElevatedButton(
-          onPressed: _submit,
-          child: const Text('추가'),
+          onPressed: _isLoading ? null : _submit,
+          child: _isLoading
+              ? const SizedBox(
+            width: 16,
+            height: 16,
+            child: CircularProgressIndicator(strokeWidth: 2),
+          )
+              : const Text('추가'),
         ),
       ],
     );
@@ -340,32 +400,30 @@ class _VolumeManageScreenState extends State<VolumeManageScreen> {
   Future<void> _loadVolumes() async {
     setState(() => _isLoading = true);
 
-    // TODO: API 호출
-    await Future.delayed(const Duration(milliseconds: 500));
+    try {
+      final response = await AdminApiService.getVolumesList(
+        seriesId: widget.series['series_id'],
+      );
 
-    setState(() {
-      _volumes = [
-        {
-          'volume_id': 1,
-          'volume_number': 1,
-          'volume_title': 'Amazing Fantasy',
-          'total_pages': 24,
-          'price': 3990,
-          'is_free': 1,
-          'status': 'published'
-        },
-        {
-          'volume_id': 2,
-          'volume_number': 2,
-          'volume_title': 'The Vulture',
-          'total_pages': 0,
-          'price': 3990,
-          'is_free': 0,
-          'status': 'draft'
-        },
-      ];
-      _isLoading = false;
-    });
+      if (response['code'] == 0) {
+        setState(() {
+          _volumes = List<Map<String, dynamic>>.from(response['data']);
+          _isLoading = false;
+        });
+      } else {
+        _showError(response['msg'] ?? '권 목록을 불러올 수 없습니다');
+        setState(() => _isLoading = false);
+      }
+    } catch (e) {
+      _showError('오류: $e');
+      setState(() => _isLoading = false);
+    }
+  }
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: Colors.red),
+    );
   }
 
   void _showAddVolumeDialog() {
@@ -473,11 +531,11 @@ class _VolumeManageScreenState extends State<VolumeManageScreen> {
               children: [
                 Icon(Icons.image, size: 16, color: Colors.grey.shade600),
                 const SizedBox(width: 4),
-                Text('${volume['total_pages']}페이지'),
+                Text('${volume['total_pages'] ?? 0}페이지'),
                 const SizedBox(width: 16),
                 Icon(Icons.attach_money, size: 16, color: Colors.grey.shade600),
                 const SizedBox(width: 4),
-                Text('${volume['price']}원'),
+                Text('${volume['price'] ?? 0}원'),
                 if (volume['is_free'] == 1) ...[
                   const SizedBox(width: 8),
                   Container(
@@ -503,7 +561,7 @@ class _VolumeManageScreenState extends State<VolumeManageScreen> {
         trailing: ElevatedButton.icon(
           onPressed: () => _openPageUpload(volume),
           icon: const Icon(Icons.upload_file, size: 18),
-          label: Text(volume['total_pages'] > 0 ? '페이지 추가' : '페이지 업로드'),
+          label: Text((volume['total_pages'] ?? 0) > 0 ? '페이지 추가' : '페이지 업로드'),
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.orange.shade700,
             foregroundColor: Colors.white,
@@ -530,6 +588,7 @@ class _AddVolumeDialogState extends State<AddVolumeDialog> {
   final _titleController = TextEditingController();
   final _priceController = TextEditingController(text: '3990');
   bool _isFree = false;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -539,11 +598,47 @@ class _AddVolumeDialogState extends State<AddVolumeDialog> {
     super.dispose();
   }
 
-  void _submit() {
-    if (_formKey.currentState!.validate()) {
-      // TODO: API 호출
-      Navigator.pop(context, true);
+  Future<void> _submit() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => _isLoading = true);
+
+    try {
+      final response = await AdminApiService.addVolume(
+        seriesId: widget.seriesId,
+        volumeNumber: int.parse(_numberController.text),
+        volumeTitle: _titleController.text.isEmpty ? null : _titleController.text,
+        price: double.tryParse(_priceController.text),
+        isFree: _isFree,
+        status: 'published',
+      );
+
+      if (response['code'] == 0) {
+        if (mounted) {
+          Navigator.pop(context, true);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('권이 추가되었습니다'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      } else {
+        _showError(response['msg'] ?? '권 추가 실패');
+      }
+    } catch (e) {
+      _showError('오류: $e');
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
+  }
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: Colors.red),
+    );
   }
 
   @override
@@ -559,7 +654,7 @@ class _AddVolumeDialogState extends State<AddVolumeDialog> {
               TextFormField(
                 controller: _numberController,
                 decoration: const InputDecoration(
-                  labelText: '권 번호',
+                  labelText: '권 번호 *',
                   hintText: '예: 1',
                 ),
                 keyboardType: TextInputType.number,
@@ -596,12 +691,18 @@ class _AddVolumeDialogState extends State<AddVolumeDialog> {
       ),
       actions: [
         TextButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: _isLoading ? null : () => Navigator.pop(context),
           child: const Text('취소'),
         ),
         ElevatedButton(
-          onPressed: _submit,
-          child: const Text('추가'),
+          onPressed: _isLoading ? null : _submit,
+          child: _isLoading
+              ? const SizedBox(
+            width: 16,
+            height: 16,
+            child: CircularProgressIndicator(strokeWidth: 2),
+          )
+              : const Text('추가'),
         ),
       ],
     );
@@ -755,17 +856,17 @@ class _PageUploadScreenState extends State<PageUploadScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      widget.series['series_name'],
+                      widget.series['series_name'] ?? '',
                       style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     const SizedBox(height: 4),
-                    Text('${widget.volume['volume_number']}권 - ${widget.volume['volume_title']}'),
+                    Text('${widget.volume['volume_number']}권 - ${widget.volume['volume_title'] ?? ''}'),
                     const SizedBox(height: 8),
                     Text(
-                      '현재 페이지: ${widget.volume['total_pages']}장',
+                      '현재 페이지: ${widget.volume['total_pages'] ?? 0}장',
                       style: TextStyle(color: Colors.grey.shade700),
                     ),
                   ],

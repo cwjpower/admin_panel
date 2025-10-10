@@ -316,4 +316,156 @@ class AdminApiService {
   static Future<Map<String, dynamic>> deleteNews(String newsId) async {
     return await post('posts/delete_news.php', {'news_id': newsId});
   }
+
+  // ========== 시리즈 관리 API ==========
+
+  /// 시리즈 목록 조회
+  static Future<Map<String, dynamic>> getSeriesList({
+    String? category,
+    String? status,
+    String? search,
+  }) async {
+    String endpoint = 'series/list.php?';
+
+    if (category != null && category.isNotEmpty) {
+      endpoint += 'category=$category&';
+    }
+    if (status != null && status.isNotEmpty) {
+      endpoint += 'status=$status&';
+    }
+    if (search != null && search.isNotEmpty) {
+      endpoint += 'search=$search&';
+    }
+
+    return await get(endpoint);
+  }
+
+  /// 시리즈 추가
+  static Future<Map<String, dynamic>> addSeries({
+    required String seriesName,
+    String? seriesNameEn,
+    String? author,
+    required String category,
+    String? description,
+    String? coverImage,
+    String? status,
+    int? publisherId,
+  }) async {
+    final data = <String, String>{
+      'series_name': seriesName,
+      'category': category,
+    };
+
+    if (seriesNameEn != null) data['series_name_en'] = seriesNameEn;
+    if (author != null) data['author'] = author;
+    if (description != null) data['description'] = description;
+    if (coverImage != null) data['cover_image'] = coverImage;
+    if (status != null) data['status'] = status;
+    if (publisherId != null) data['publisher_id'] = publisherId.toString();
+
+    return await post('series/add.php', data);
+  }
+
+  /// 시리즈 수정
+  static Future<Map<String, dynamic>> updateSeries({
+    required int seriesId,
+    String? seriesName,
+    String? seriesNameEn,
+    String? author,
+    String? category,
+    String? description,
+    String? coverImage,
+    String? status,
+    int? totalVolumes,
+  }) async {
+    final data = <String, String>{'series_id': seriesId.toString()};
+
+    if (seriesName != null) data['series_name'] = seriesName;
+    if (seriesNameEn != null) data['series_name_en'] = seriesNameEn;
+    if (author != null) data['author'] = author;
+    if (category != null) data['category'] = category;
+    if (description != null) data['description'] = description;
+    if (coverImage != null) data['cover_image'] = coverImage;
+    if (status != null) data['status'] = status;
+    if (totalVolumes != null) data['total_volumes'] = totalVolumes.toString();
+
+    return await post('series/update.php', data);
+  }
+
+  // ========== 권 관리 API ==========
+
+  /// 권 목록 조회
+  static Future<Map<String, dynamic>> getVolumesList({
+    int? seriesId,
+    String? status,
+    int? isFree,
+  }) async {
+    String endpoint = 'volumes/list.php?';
+
+    if (seriesId != null) {
+      endpoint += 'series_id=$seriesId&';
+    }
+    if (status != null && status.isNotEmpty) {
+      endpoint += 'status=$status&';
+    }
+    if (isFree != null) {
+      endpoint += 'is_free=$isFree&';
+    }
+
+    return await get(endpoint);
+  }
+
+  /// 권 추가
+  static Future<Map<String, dynamic>> addVolume({
+    required int seriesId,
+    required int volumeNumber,
+    String? volumeTitle,
+    String? coverImage,
+    double? price,
+    bool? isFree,
+    int? totalPages,
+    String? publishDate,
+    String? status,
+    int? publisherId,
+  }) async {
+    final data = <String, String>{
+      'series_id': seriesId.toString(),
+      'volume_number': volumeNumber.toString(),
+    };
+
+    if (volumeTitle != null) data['volume_title'] = volumeTitle;
+    if (coverImage != null) data['cover_image'] = coverImage;
+    if (price != null) data['price'] = price.toString();
+    if (isFree != null) data['is_free'] = (isFree ? '1' : '0');
+    if (totalPages != null) data['total_pages'] = totalPages.toString();
+    if (publishDate != null) data['publish_date'] = publishDate;
+    if (status != null) data['status'] = status;
+    if (publisherId != null) data['publisher_id'] = publisherId.toString();
+
+    return await post('volumes/add.php', data);
+  }
+
+  /// 권 수정
+  static Future<Map<String, dynamic>> updateVolume({
+    required int volumeId,
+    String? volumeTitle,
+    String? coverImage,
+    double? price,
+    bool? isFree,
+    int? totalPages,
+    String? publishDate,
+    String? status,
+  }) async {
+    final data = <String, String>{'volume_id': volumeId.toString()};
+
+    if (volumeTitle != null) data['volume_title'] = volumeTitle;
+    if (coverImage != null) data['cover_image'] = coverImage;
+    if (price != null) data['price'] = price.toString();
+    if (isFree != null) data['is_free'] = (isFree ? '1' : '0');
+    if (totalPages != null) data['total_pages'] = totalPages.toString();
+    if (publishDate != null) data['publish_date'] = publishDate;
+    if (status != null) data['status'] = status;
+
+    return await post('volumes/update.php', data);
+  }
 }
