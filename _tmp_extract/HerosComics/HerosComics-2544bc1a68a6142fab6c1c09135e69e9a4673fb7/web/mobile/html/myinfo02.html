@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>BOOK talk</title>
+		<link rel="shortcut icon" href="favicon.ico">
+		<!-- css -->
+		<link rel="stylesheet" href="/mobile/css/jquery.mobile-1.4.5.css">
+		<link rel="stylesheet" href="/mobile/css/globals.css">
+		<link rel="stylesheet" href="/mobile/css/myinfo.css">
+		<!-- js -->
+		<script src="/includes/js/jquery.min.js"></script>
+		<script src="/includes/js/jquery.mobile-1.4.5.min.js"></script>
+	</head>
+	<body>
+		<div data-role="page">
+			<!-- panel -->
+			<div data-role="panel" id="overlayPanel" data-display="overlay" data-position="right">
+				<div class="panel-area user-logout"><!-- display:none; -->
+					<div class="panel-header">
+						<h2>전체 메뉴 목록</h2>
+						<a href="#pageone" data-rel="close" class="btn-panel-close">Close</a>
+					</div>
+					<div class="panel-login-area">
+						<p class="login-txt">로그인이 필요합니다.</p>
+						<a class="btn-panel-login" href="#">로그인<span class="gnb_login"></span></a>
+					</div>
+					<div class="gnb-area">
+						<h3>서비스 메뉴</h3>
+						<ul class="gnb-menu">
+							<li><a href="#">공지사항</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">이벤트</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">무료도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">인기도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">추천도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">도서신청</a><span class="arrow">&gt;</span></li>
+						</ul>
+					</div>
+					<div class="panel-bottom">
+						<a class="service-center"><span class="icon-service"></span><span>고객센터</span></a>
+						<a class="advice"><span class="icon-advice"></span><span>건의사항</span></a>
+						<div class="btn-app"><a href="#">App 다운로드</a></div>
+					</div>
+				</div>
+				<div class="panel-area user-login"><!-- display:block; -->
+					<div class="panel-header">
+						<h2>전체 메뉴 목록</h2>
+						<a href="#pageone" data-rel="close" class="btn-panel-close">Close</a>
+					</div>
+					<div class="user-img-area">
+						<div class="user-img-bg">
+							<div class="user-img"><img src="../img/common/user_img.png" alt=""></div>
+						</div>
+						<div class="user-info">
+							<div class="user-id">사용자 아이디</div>
+							<div class="user-msg">프로필메세지</div>
+						</div>
+					</div>
+					<div class="s-menu-area">
+						<ul>
+							<li><a href="#">내 서재</a></li>
+							<li><a href="#">찜 목록</a></li>
+							<li><a href="#">장바구니</a></li>
+						</ul>	
+					</div>
+					<div class="my-pocket-area">
+						<h3>내 지갑</h3>
+						<ul class="pocket-list">
+							<li><strong>15,000</strong><span>캐시</span></li>
+							<li><strong>1,000</strong><span>포인트</span></li>
+							<li><strong>0</strong><span>쿠폰</span></li>
+							<li><strong>0</strong><span>대여권</span></li>
+						</ul>
+					</div>
+					<div class="readbooks-list">
+						<h3>최근 읽은 책</h3>
+						<!-- 읽은 책 없습니다. -->
+						<div class="opct-area">
+							<div class="opct">최근 읽은 책이 없습니다.</div>
+						</div>
+						<!-- 읽은 책 3권 보이기 -->
+						<ul class="view-book view3-book">
+							<li><a href="#"><img src="../img/book_img/book_sample01.jpg" alt="읽은 책 제목1"></a></li>
+							<li><a href="#"><img src="../img/book_img/book_sample01.jpg" alt="읽은 책 제목2"></a></li>
+							<li><a href="#"><img src="../img/book_img/book_sample01.jpg" alt="읽은 책 제목3"></a></li>
+						</ul>
+					</div>
+					<div class="my-page">
+						<h3>마이페이지</h3>
+						<ul>
+							<li><a href="#">개인정보수정</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">통계</a><span class="arrow">&gt;</span></li>
+						</ul>
+					</div>
+					<div class="gnb-area">
+						<h3>서비스 메뉴</h3>
+						<ul class="gnb-menu">
+							<li><a href="#">공지사항</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">이벤트</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">무료도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">인기도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">추천도서</a><span class="arrow">&gt;</span></li>
+							<li><a href="#">도서신청</a><span class="arrow">&gt;</span></li>
+						</ul>
+					</div>
+					<div class="panel-bottom">
+						<a class="service-center"><span class="icon-service"></span><span>고객센터</span></a>
+						<a class="advice"><span class="icon-advice"></span><span>건의사항</span></a>
+						<div class="btn-app"><a href="#">App 다운로드</a></div>
+					</div>
+				</div>
+			</div>
+			<!-- panel End -->
+			<!-- header -->
+			<div data-role="header">
+				<!-- logo -->
+				<div class="header-top">
+					<div class="header-btn-left btn-forward"><a href="#" ></a></div>
+					<h1><a href="#"><img src="../img/common/logo.png" alt="BOOKtalk"></a></h1>
+					<div class="header-btn-right">
+						<span class="btn-search"></span>
+						 <a href="#overlayPanel" class="ui-btn-inline btn-panel"></a>
+					</div>
+				</div>
+				<!-- logo End -->
+			</div>
+			<!-- header End -->
+			<!-- main -->
+			<div data-role="main" class="ui-content myinfo-area">
+				<h2>개인정보 수정 &gt; 비밀번호 수정</h2>
+				<form>
+					<div class="myinfo-modify">
+						<h3 class="myinfo-tit">비밀번호 수정</h3>
+						<div class="myinfo-list-area">
+							<ul class="myinfo-list-modify pw-list-modify">
+								<li class="inp-box1">
+									<div class="inp-tit"><label for="Pw">현재 비밀번호</label></div>
+									<div class="inp">
+										<input type="text" id="Pw">
+									</div>
+								</li>
+								<li class="inp-box1">
+									<div class="inp-tit"><label for="newPw">새 비밀번호</label></div>
+									<div class="inp">
+										<input type="text" id="newPw">
+									</div>
+								</li>
+								<li class="inp-box1">
+									<div class="inp-tit"><label for="chekNewPw">새 비밀번호 확인</label></div>
+									<div class="inp">
+										<input type="text" id="chekNewPw">
+									</div>
+								</li>
+								<!--  
+								<li class="inp-box">
+									<div class="add-myinfo-tit"><label for="Pw">새 비밀번호 확인</label></div>
+									<div class="add-myinfo user-auth-ok">
+										<input type="password" id="Pw" class="">
+									</div>
+								</li>
+								<li class="inp-box">
+									<div class="add-myinfo-tit"><label for="newPw">새 비밀번호</label></div>
+									<div class="add-myinfo user-auth-ok">
+										<input type="password" id="newPw" class="">
+									</div>
+								</li>
+								<li class="inp-box">
+									<div class="add-myinfo-tit"><label for="chekNewPw">새 비밀번호 확인</label></div>
+									<div class="add-myinfo user-auth-ok">
+										<input type="password" id="chekNewPw" class="">
+									</div>
+								</li>-->
+							</ul>
+						</div>
+					</div>
+				</form>
+				<ul class="btn-myinfo-modify">
+					<li><a href="#" class="btn-gray">확인</a></li>
+					<li><a href="#" class="btn-skyblue">취소</a></li>
+				</ul>
+			</div>
+			<!-- main End -->
+		</div>
+	</body>
+</html>

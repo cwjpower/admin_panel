@@ -1,6 +1,9 @@
 # This is a generated file; do not edit or check into version control.
+<<<<<<< HEAD
 file_picker=C:\\Users\\cwjpo\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\file_picker-8.3.7\\
 flutter_plugin_android_lifecycle=C:\\Users\\cwjpo\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\flutter_plugin_android_lifecycle-2.0.31\\
+=======
+>>>>>>> 9084b6b (chore: initial commit (herocomics_app))
 path_provider_linux=C:\\Users\\cwjpo\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\path_provider_linux-2.2.1\\
 path_provider_windows=C:\\Users\\cwjpo\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\path_provider_windows-2.3.0\\
 shared_preferences=C:\\Users\\cwjpo\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\shared_preferences-2.5.3\\

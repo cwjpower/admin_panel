@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html xml:lang="ko" lang="ko">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+	<meta name="description" content="HEROS COMICS, 히어로즈 코믹스">
+	<meta name="keywords" content="">
+	<title>HEROS COMICS</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+	<meta name="format-detection" content="telephone=no, address=no, email=no">
+
+	<link rel="shortcut icon" href="./assets/favicon/favicon.ico">
+	<link rel="icon" href="./assets/favicon/favicon.ico">
+	<link rel="apple-touch-icon" sizes="57x57" href="./assets/favicon/apple-icon-57x57.png">
+	<link rel="apple-touch-icon" sizes="60x60" href="./assets/favicon/apple-icon-60x60.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="./assets/favicon/apple-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="76x76" href="./assets/favicon/apple-icon-76x76.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="./assets/favicon/apple-icon-114x114.png">
+	<link rel="apple-touch-icon" sizes="120x120" href="./assets/favicon/apple-icon-120x120.png">
+	<link rel="apple-touch-icon" sizes="144x144" href="./assets/favicon/apple-icon-144x144.png">
+	<link rel="apple-touch-icon" sizes="152x152" href="./assets/favicon/apple-icon-152x152.png">
+	<link rel="apple-touch-icon" sizes="180x180" href="./assets/favicon/apple-icon-180x180.png">
+	<link rel="icon" type="image/png" sizes="192x192"  href="./assets/favicon/android-icon-192x192.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="96x96" href="./assets/favicon/favicon-96x96.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon/favicon-16x16.png">
+	<link rel="manifest" href="./assets/favicon/manifest.json">
+	<meta name="msapplication-TileColor" content="#ffffff">
+	<meta name="msapplication-TileImage" content="./assets/favicon/ms-icon-144x144.png">
+	<meta name="theme-color" content="#ffffff">
+	<link href="./assets/css/style.css" rel="stylesheet">
+	<script type="text/javascript" src="./assets/js/lib/jquery-1.11.2.min.js"></script>
+	<script type="text/javascript" src="./assets/js/lib/jquery.nice-select.min.js"></script>
+	<script type="text/javascript" src="./assets/js/lib/swiper.min.js"></script>
+	<script type="text/javascript" src="./assets/js/lib/jquery.rating.js"></script>
+	<script type="text/javascript" src="./assets/js/entry.js"></script>
+</head>
+<body>
+<!-- skip -->
+<div id="skip" class="sr-only">
+	<ul>
+		<li><a href="#gnb">메뉴 바로가기</a></li>
+		<li><a href="#contents">본문 바로가기</a></li>
+		<li><a href="#footer">하단 바로가기</a></li>
+	</ul>
+</div>
+<!-- //skip -->
+
+<section id="wrapper">
+	<header id="header">
+		<div class="cnt-inner">
+			<div class="header-top"><h1 class="eng"><a class="cl-heros" href="main.html">HEROS COMICS</a></h1>
+				<div class="header-search">
+					<div class="type-pc">
+						<div class="slash-54"><input type="text" class="text" placeholder="가디언즈 오브 갤럭시" /></div>
+					</div>
+					<div class="type-mobile">
+						<div class="header-search-btn not-active"><a href="#"><img src="./assets/img/icon-search.png" alt="" /></a></div>
+						<div class="header-search-layer" style="display:none;">
+							<input type="text" class="text" placeholder="가디언즈 오브 갤럭시" /><a href="#" class="btn btn-search-s"><img src="./assets/img/icon-search.png" alt="" /></a>
+						</div>
+					</div>
+				</div>
+				<div class="header-my">
+					<a href="#" class="js-my-open js-pc"><img src="./assets/img/icon-my.png" alt="개인화영역" /></a>
+					<div class="header-my-open" style="display:none;">
+						<ul>
+							<li><strong>홍길동</strong> 님</li>
+							<li><a href="my-page.html">마이페이지</a></li>
+							<li><a href="my-page-library.html">내서재</a></li>
+							<li><a href="my-page-wish.html">위시리스트</a></li>
+							<li><a href="my-order-list.html">구매내역</a></li>
+							<li><a href="main.html">로그아웃</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="header-cart">
+					<a href="order-bag.html"><img src="./assets/img/icon-cart.png" alt="장바구니" /><span class="header-cart-count">20</span></a>
+				</div>
+			</div>
+		</div>
+		<div class="cnt-wrapper bg-gray">
+			<div class="cnt-inner">
+				<div id="gnb">
+					<nav class="gnb-nav">
+						<ul>
+							<li class="eng is-selected"><a href="news-list.html">NEWS</a></li>
+							<li class="eng "><a href="books-home.html">BOOKS</a></li>
+							<li class="eng "><a href="comm-list.html">COMMUNITY</a></li>
+						</ul>
+					</nav>
+					<button type="button" title="확장메뉴" class="nav-icon is-close"><span class="icon-line "></span> <span class="icon-line"></span> <span class="icon-line "></span></button>
+					<nav class="gnb-nav-extend" style="display:none;">
+						<ul>
+							<li><p class="eng">NEWS</p>
+								<ul>
+									<li><a href="news-list.html">종합</a></li>
+									<li><a href="news-list.html">MARVEL COMICS</a></li>
+									<li><a href="news-list.html">DC COMICS</a></li>
+									<li><a href="news-list.html">IMAGE COMICS</a></li>
+								</ul>
+							</li>
+							<li><p class="eng">BOOKS</p>
+								<ul>
+									<li><a href="books-issue.html">신간</a></li>
+									<li><a href="books-best.html">베스트</a></li>
+									<li><a href="books-brand-all.html">브랜드별</a></li>
+									<li><a href="books-recommend.html">추천</a></li>
+								</ul>
+							</li>
+							<li><p class="eng">COMMUNITY</p>
+								<ul>
+									<li><a href="comm-list.html">MARVEL COMICS</a></li>
+									<li><a href="comm-list.html">DC COMICS</a></li>
+									<li><a href="comm-list.html">IMAGE COMICS</a></li>
+								</ul>
+							</li>
+							<li><p class="">고객센터</p>
+								<ul>
+									<li><a href="cs-main.html">고객센터 안내</a></li>
+									<li><a href="cs-notice-list.html">공지사항</a></li>
+									<li><a href="cs-faq-list.html">자주 묻는 질문</a></li>
+									<li><a href="cs-1vs1-list.html">1:1 문 의</a></li>
+									<li><a href="cs-book-list.html">도서신청</a></li>
+									<li><a href="cs-inquiry-list.html">건의사항</a></li>
+								</ul>
+							</li>
+						</ul>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</header>
+	<!--// header -->
+	<section id="contents">
+		<div class="cnt-inner">
+			<div class="sub-header">
+				<h2 class="sub-title eng">ORDER</h2>
+			</div>
+			<div class="col-wrap">
+				<div class="col-cart">
+					<h3 class="pay-box-title">주문상품
+						<div class="h3-btn"><span class="total">총 <strong>4</strong> 권</span></div>
+					</h3>
+					<div class="item-cart-list">
+						<div class="item-cart">
+							<div class="cart-book">
+								<div class="cart-book-thumbnail"><img src="./assets/img/@img-book-04.jpg" alt=""></div>
+							</div>
+							<div class="cart-subject">
+								<div class="cart-book-type"><span class="mobile"><img src="./assets/img/icon-mobile.png" alt="mobile"></span></div>
+								<div class="cart-name"><a href="#">스파이더맨: 맨 인블랙</a></div>
+								<div class="cart-krw"><strong>9,000</strong>원</div>
+								<div class="cart-discount dc-minus">10%</div>
+								<div class="cart-info">
+									<span>수량 : 1</span>
+								</div>
+                            </div>
+						</div>
+						<div class="item-cart">
+							<div class="cart-book">
+								<div class="cart-book-thumbnail"><img src="./assets/img/@img-book-03.jpg" alt=""></div>
+							</div>
+							<div class="cart-subject">
+								<div class="cart-book-type"><span class="all"><img src="./assets/img/icon-all.png" alt="mobile"></span></div>
+								<div class="cart-name"><a href="#">스파이더맨: 맨 인블랙 스파이더맨: 맨 인블랙 스파이더맨: 맨 인블랙</a></div>
+								<div class="cart-krw"><strong>12,000</strong>원</div>
+								<!--<div class="cart-discount dc-minus">10%</div>-->
+								<div class="cart-info">
+									<span>수량 : 1</span>
+								</div>
+                            </div>
+						</div>
+						<div class="item-cart">
+							<div class="cart-book">
+								<div class="cart-book-thumbnail"><img src="./assets/img/@img-book-04.jpg" alt=""></div>
+							</div>
+							<div class="cart-subject">
+								<div class="cart-book-type"><span class="mobile"><img src="./assets/img/icon-mobile.png" alt="mobile"></span></div>
+								<div class="cart-name"><a href="#">스파이더맨: 맨 인블랙</a></div>
+								<div class="cart-krw"><strong>9,000</strong>원</div>
+								<div class="cart-discount dc-minus">10%</div>
+								<div class="cart-info">
+									<span>수량 : 1</span>
+								</div>
+							</div>
+						</div>
+						<div class="item-cart">
+							<div class="cart-book">
+								<div class="cart-book-thumbnail"><img src="./assets/img/@img-book-03.jpg" alt=""></div>
+							</div>
+							<div class="cart-subject">
+								<div class="cart-book-type"><span class="all"><img src="./assets/img/icon-all.png" alt="mobile"></span></div>
+								<div class="cart-name"><a href="#">스파이더맨: 맨 인블랙 스파이더맨: 맨 인블랙 스파이더맨: 맨 인블랙</a></div>
+								<div class="cart-krw"><strong>12,000</strong>원</div>
+								<!--<div class="cart-discount dc-minus">10%</div>-->
+								<div class="cart-info">
+									<span>수량 : 1</span>
+								</div>
+							</div>
+						</div>
+					</div>
+                    <p class="info-notice">전자책은 다운로드 되는 디지털 파일이며, 구매 시 취소 및 환불은 다운로드 또는 스트리밍 하지 않은 상태에서 7일 이내에만 가능합니다</p>
+                    <p class="info-notice">전자책은 BOOKtalk 앱으로만 볼 수 있습니다. </p>
+
+				</div>
+				<div class="col-total">
+					<h3 class="pay-box-title">할인 적용</h3>
+
+					<div class="pay-type-title"><span>할인 수단을 적용하세요.</span></div>
+                    <div class="pay-type-way">
+                        <dl>
+                            <dt class="order-title">북토크 포인트</dt>
+                            <dd class="order-data"><strong>30,000</strong> 원</dd>
+							<dd class="order-total">
+								<input type="text" class="text" value="1,000" /><a href="#" class="btn">모두 사용</a>
+							</dd>
+						</dl>
+						<!--validation message-->
+						<div class="alert-msg">
+							<div class="info-warning">포인트가 부족합니다.</div>
+						</div>
+
+						<dl>
+                            <dt class="order-title">북토크 캐시</dt>
+                            <dd class="order-data"><strong>130,000</strong> 원</dd>
+							<dd class="order-total">
+								<input type="text" class="text" value="1,000" /><a href="#" class="btn">모두 사용</a>
+							</dd>
+                        </dl>
+						<!--validation message-->
+						<div class="alert-msg">
+							<div class="info-warning">캐시가 부족합니다.</div>
+						</div>
+                    </div>
+					<div class="pay-type-cash">
+						<a href="#" class="btn btn-more-hero">캐시 충전</a>
+					</div>
+
+					<div class="pay-type-title"><span>결제수단을 선택하세요.</span></div>
+					<div class="pay-type-way">
+						<p class="pay-type-way-title">신용카드</p>
+						<span class="radio radio--type2">
+									<input type="radio" name="c" id="c1" >
+									<label for="c1">신용카드 (일반)</label>
+								</span>
+						<span class="radio radio--type2">
+									<input type="radio" name="c" id="c2" >
+									<label for="c2">해외 발급 신용카드 (일반)</label>
+								</span>
+
+						<p class="pay-type-way-title">간편결제</p>
+						<span class="radio radio--type2">
+									<input type="radio" name="c" id="c3" >
+									<label for="c3">카카오페이</label>
+								</span>
+						<span class="radio radio--type2">
+									<input type="radio" name="c" id="c4" >
+									<label for="c4">페이나우</label>
+								</span>
+						<span class="radio radio--type2">
+									<input type="radio" name="c" id="c5" >
+									<label for="c5">네이버페이</label>
+								</span>
+						<span class="radio radio--type2">
+									<input type="radio" name="c" id="c6" >
+									<label for="c6">네이버페이</label>
+								</span>
+						<span class="radio radio--type2">
+									<input type="radio" name="c" id="c7" >
+									<label for="c7">PAYCO</label>
+								</span>
+
+						<p class="pay-type-way-title">현금결제</p>
+						<span class="radio radio--type2">
+									<input type="radio" name="c" id="c8" >
+									<label for="c8">실시간 계좌 이체</label>
+								</span>
+						<span class="radio radio--type2">
+									<input type="radio" name="c" id="c9" >
+									<label for="c9">온라인 (무통장) 송금</label>
+								</span>
+					</div>
+					<div class="pay-type-way">
+						<p class="pay-type-way-title">카드</p>
+						<span class="selectbox selectbox--type1">
+									<select class="resp-tabDrop">
+										<option class="resp-drop-option" id="">선택하세요</option>
+										<option class="resp-drop-option" id="">삼성카드</option>
+										<option class="resp-drop-option" id="">국민카드</option>
+										<option class="resp-drop-option" id="">현대카드</option>
+										<option class="resp-drop-option" id="">롯데카드</option>
+										<option class="resp-drop-option" id="">농협카드</option>
+									</select>
+								</span>
+
+						<p class="pay-type-way-title">카드 구분</p>
+						<span class="radio radio--type2">
+									<input type="radio" name="c" id="c22" >
+									<label for="c22">개인카드</label>
+								</span>
+						<span class="radio radio--type2">
+									<input type="radio" name="c" id="c23" >
+									<label for="c23">법인카드</label>
+								</span>
+					</div>
+					<div class="pay-type-total">
+						<div class="pay-type-total-title">최종 결제 금액</div>
+						<div class="pay-type-total-amount"><strong>270,000</strong> 원</div>
+					</div>
+					<div class="pay-type-confirm">
+						<!--본인인증 전-->
+						<div class="pay-type-confirm-title">최초 본인 인증</div>
+						<a href="#" class="btn btn-confirm"><span>본인 인증하기</span></a>
+						<div class="info-warning">본인 인증은 최초 주문/결제 시 진행 됩니다.</div>
+						<!--본인인증 후-->
+						<!--<div class="pay-type-confirm-title">본인 인증이 완료 되었습니다.</div>-->
+					</div>
+					<div class="pay-type-alert">
+						<span class="checkbox checkbox--type2">
+							<input type="checkbox" name="" id="aa" >
+							<label for="aa">상기 결제 내역 및 편의사항을 확인 하였습니다.</label>
+						</span>
+					</div>
+					<div class="pay-type-btn">
+						<a href="#" class="btn btn-more-hero">선택된 상품 구매하기</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="floating-banner type-pc">
+			<div class="cart-list">
+				<p class="cart-list-title">최근 본 상품</p>
+				<!-- 최근 본 상품이 없을 경우 //
+				<span class="noitem">
+					최근 본 상품이 <br>없습니다.
+				</span> -->
+				<a class="cart-list-thumbnail" href="#"><img src="./assets/img/@img-book-01.jpg" alt="" /></a>
+				<a class="cart-list-thumbnail" href="#"><img src="./assets/img/@img-book-01.jpg" alt="" /></a>
+				<a href="#" class="btn btn-cart">장바구니</a>
+			</div>
+		</div>
+	</section>
+	<!--// cntWrap -->
+
+	<footer id="footer">
+		<div class="footer-bar">
+			<div class="cnt-inner">
+				<div class="footer-cs-center"><img src="./assets/img/icon-tel.png" alt="" />고객센터  1234-5678</div>
+				<div class="footer-cs-link">
+					<a href="#">로그인</a>
+					<a href="#">주문배송</a>
+					<a href="#">고객문의</a>
+				</div>
+			</div>
+		</div>
+		<div class="footer-info">
+			<div class="cnt-inner">
+				㈜ 비콘   |   대표   박북톡<br>
+				서울특별시 마포구 월드컵북로 396 누리꿈스퀘어 비즈타워 1103호<br>
+				사업자 등록번호 000-00-00000<br>
+				통신판매업 신고 제 000 – 서울 00 00-00000호<br>
+				개인정보보호 책임 admin@booktalk.co.kr<br>
+				<div class="footer-link">
+					<a href="#" class="btn btn-link">이용약관</a>
+					<a href="#" class="btn btn-link">개인정보처리방침</a>
+					<a href="#" class="btn btn-link">청소년보호정책</a>
+					<a href="#" class="btn btn-link">사업자 정보 확인</a>
+				</div>
+			</div>
+		</div>
+
+	</footer>
+	<!-- footer -->
+</section>
+ <script>
+	  $(function () {
+        var rating = 0.8;
+        $(".counter").text(rating);
+        var changeRating = function (rating) {
+          $(this).next().text(rating);
+        };
+        $("#rateYo1").rateYo({rating: 4.2});
+        $("#rateYo2").rateYo({rating: 3.8});
+        $("#rateYo3").rateYo({rating: 4.8});
+        $("#rateYo4").rateYo({rating: 2.2});
+        $("#rateYo5").rateYo({rating: 1.2});
+        $("#rateYo6").rateYo({rating: 2.8});
+        $("#rateYo7").rateYo({rating: 4.8});
+        $("#rateYo8").rateYo({rating: 4.2});
+        $("#rateYo9").rateYo({rating: 2.2});
+      });
+  </script>
+<!--// wrap -->
+</body>
+</html>

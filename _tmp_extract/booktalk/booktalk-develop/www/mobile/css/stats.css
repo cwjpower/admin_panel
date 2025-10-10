@@ -1,0 +1,160 @@
+@charset "utf-8";
+
+
+/*----------------------- form -----------------------*/
+/* stats */
+.stats-area h2 { background-color:#fff; border-bottom:1px solid #d7d7d7; padding:10px;}
+.stats-menu-area { padding:10px;}
+.stats-menu-area .m-stats:after { display:block; clear:both; content:"";}
+.stats-menu-area .m-stats li { float:left; width:50%; margin-bottom:10px;}
+.stats-menu-area .m-stats li a { display:block; border:1px solid #dfdfdf; border-radius:3px; font-size:15px; font-weight:bold; text-align:center; padding:70px 0 8px; }
+.stats-menu-area .m-stats li.stats-m01 a { background:url("../img/stats/stats_m01.png") 50% 25% no-repeat; background-color:#fff; background-size:36px 36px; margin-right:5px;}
+.stats-menu-area .m-stats li.stats-m02 a { background:url("../img/stats/stats_m02.png") 50% 25% no-repeat; background-color:#fff; background-size:36px 36px; margin-left:5px;}
+.stats-menu-area .m-stats li.stats-m03 a { background:url("../img/stats/stats_m03.png") 50% 25% no-repeat; background-color:#fff; background-size:36px 36px; margin-right:5px;}
+.stats-menu-area .m-stats li.stats-m04 a { background:url("../img/stats/stats_m04.png") 50% 25% no-repeat; background-color:#fff; background-size:36px 36px; margin-left:5px;}
+.stats-menu-area .m-stats li.stats-m05 a { background:url("../img/stats/stats_m05.png") 50% 25% no-repeat; background-color:#fff; background-size:36px 36px; margin-right:5px;}
+
+.m-reading { background-color:#fff; border:1px solid #dfdfdf; border-radius:3px;}
+.m-reading:after { display:block; clear:both; content:"";}
+.m-reading li { float:left; width:33.3%; height:35px; line-height:35px; text-align:center;}
+.m-reading li a { display:block; border-left:1px solid #dfdfdf; font-size:14px; font-weight:bold;}
+.m-reading li:first-child { width:33.4%;}
+.m-reading li:first-child a { border-left:none;}
+.m-reading li a.ui-btn-active { background-color:#a5ca71; color:#fff;}
+
+.list-line { width:100%; height:1px; border-top:1px solid #dfdfdf; margin-top:-1px;}
+
+/* m01 */
+.stats-cont-area { padding:10px;}
+.reading-time li { position:relative; font-size:14px; font-weight:bold; margin-bottom:10px;}
+.reading-time li span { position:absolute; right:0; top:0;}
+
+.reading-booklist { background-color:#fff; border-top:1px solid #dfdfdf; border-right:1px solid #dfdfdf; margin-top:10px;}
+.reading-booklist:after { display:block; clear:both; content:"";}
+.reading-booklist li { position:relative; float:left; width:33.33%; border-left:1px soldi #dfdfdf; border-bottom:1px solid #dfdfdf;}
+.reading-booklist li:last-child:after { display:block; clear:both; content:""; position:absolute; right:-1px; top:0; width:1px; height:100%; border-right:1px solid #dfdfdf; margin-left:1px;}
+.reading-booklist li .reading-book-box { overflow:hidden; height:156px; padding:10px 0; border-left:1px solid #dfdfdf;}
+.reading-booklist li .waiting-book-box { height:138px;}
+.reading-booklist li .reading-date-box { height:110px;}
+.reading-book-box a { display:block; width:90px; margin:0 auto;}
+.reading-book-box a .reading-book-tit { height:31px; color:#3d3d3d; font-size:13px; margin:5px 0 10px;}
+.reading-date div { color:#868686; font-size:12px; letter-spacing:-1px; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;}
+
+.reading-booklist li .reading-graph-box { height:174px;}
+.reading-graph-bg { height:12px; background-color:#f3f3f3; border:1px solid #d2d2d2; border-radius:10px; margin-top:5px;}
+.reading-graph { height:12px; background-color:#a5ca71;}
+/* m01 */
+
+/* m02 */
+.m-reading-thema { background-color:#fff; border:1px solid #dfdfdf; border-radius:3px;}
+.m-reading-thema:after { display:block; clear:both; content:"";}
+.m-reading-thema li { float:left; width:33.3%; height:35px; line-height:35px; text-align:center;}
+.m-reading-thema li a { display:block; border-left:1px solid #dfdfdf; font-size:14px; font-weight:bold;}
+.m-reading-thema li:first-child { width:33.4%;}
+.m-reading-thema li:first-child a { border-left:none;}
+.m-reading-thema li a.ui-btn-active { background-color:#a5ca71; color:#fff;}
+
+.thema-graph-area { background-color:#fff; border:1px solid #dfdfdf; border-radius:5px; padding:10px; margin:10px 0;}
+.graph-ps { color:#868686; font-size:13px; letter-spacing:-1px; text-align:right; padding-top:10px;}
+.thema-graph-info { margin:5px 0;}
+.thema-graph-info dt { color:#565656; font-size:14px;}
+.thema-graph-info dt .txt-868686 { color:#868686; font-size:13px; }
+.thema-graph-info dd { color:#868686; font-size:13px; padding:5px 0 0 20px;}
+.graph-color { display:inline-block; width:15px; height:15px; vertical-align:middle; margin-right:5px;}
+.graph-color1 { background-color:#f15d87;}
+.graph-color2 { background-color:#3aa4e1;}
+/* m02 */
+
+/* m03 */
+.reading-habit-area { padding:15px 10px 10px;}
+.habit-date-list { padding:10px 0 0;}
+.habit-date-list:after { display:block; clear:both; content:""; }
+.habit-date-list li { float:left; width:33.3%;}
+.habit-date-list .habit-date-box { width:95%; height:118px; background-color:#fff; border:1px solid #dfdfdf; border-radius:5px; margin:0 auto;}
+.reading-type-tit { background-color:#c5c5c5; border-radius:5px 5px 0 0; color:#fff; text-align:center; padding:10px; }
+.reading-type-txt { color:#3d3d3d; text-align:center; padding:10px;}
+.time-txt { display:block;}
+.day-txt { padding-top:20px;}
+.season-txt { padding-bottom:35px;}
+.spring { background:url("../img/stats/icon_spring.png") 50% 100% no-repeat; background-size:30px auto;}
+.summer { background:url("../img/stats/icon_summer.png") 50% 100% no-repeat; background-size:30px auto;}
+.fall { background:url("../img/stats/icon_fall.png") 50% 100% no-repeat; background-size:30px auto;}
+.winter { background:url("../img/stats/icon_winter.png") 50% 100% no-repeat; background-size:30px auto;}
+
+.btn-habit-more { width:95%; height:30px; background-color:#fff; border:1px solid #47a8cc; border-radius:3px; margin:10px auto;}
+.btn-habit-more a { display:block; font-size:14px; color:#47a8cc; line-height:30px; text-align:center;}
+
+.habit-cont-area { margin-top:15px;}
+.reading-time-list { margin-top:10px; background-color:#fff; border:1px solid #dfdfdf; border-radius:5px; }
+.reading-time-list li { border-top:1px solid #dfdfdf; font-size:14px;}
+.reading-time-list li:first-child { border-top:none;}
+.reading-time-list li .time-step { display:inline-block; background-color:#c5c5c5; color:#fff; padding:10px; margin-right:10px;}
+.reading-time-list li:first-child .time-step { border-radius:5px 0 0 0;}
+.reading-time-list li.last-time .time-step { border-radius:0 0 0 5px;}
+
+.day-graph-area { background-color:#fff; border:1px solid #dfdfdf; border-radius:5px; padding:10px; margin-top:10px;}
+
+.season-graph-area { background-color:#fff; border:1px solid #dfdfdf; border-radius:5px; margin-top:10px;}
+.season-graph { padding:15px 10px;}
+.season-reading-area { overflow:hidden; background-color:#54aac8; border-radius:0 0 5px 5px; padding:10px 0;}
+.season-reading { float:left; width:25%; background:url("../img/stats/season_bar.png") 0 0 no-repeat; color:#fff; text-align:center;}
+.season-reading:first-child { background:none;}
+.season-reading dt { font-size:13px;}
+.season-reading dd { font-size:18px; font-weight:bold;}
+/* m03 */
+
+/* m04 */
+.m-reading-date { background-color:#fff; border:1px solid #dfdfdf; border-radius:3px;}
+.m-reading-date:after { display:block; clear:both; content:"";}
+.m-reading-date li { float:left; width:25%; height:35px; line-height:35px; text-align:center;}
+.m-reading-date li a { display:block; border-left:1px solid #dfdfdf; font-size:14px; font-weight:bold;}
+.m-reading-date li:first-child a { border-left:none;}
+.m-reading-date li a.ui-btn-active { background-color:#a5ca71; color:#fff;}
+
+.today-area { margin-top:10px; color:#3d3d3d; font-size:14px; font-weight:bold; text-align:center;}
+
+.reading-week-area { background-color:#fff; border:1px solid #dfdfdf; border-radius:5px; padding:10px; margin:10px 0;}
+.week-graph-tit { color:#3d3d3d; font-size:14px; font-weight:bold; text-align:center; padding-bottom:15px;}
+.week-graph-tit span { display:inline-block; color:#47a8cc; padding-left:20px;}
+.week-graph-area { background-color:#59cdd1; border-radius:5px; padding:15px 10px;}
+
+.reading-month-area { padding-top:15px;}
+
+/*.reading-graph-area { background-color:#fff; border:1px solid #dfdfdf; border-radius:5px; padding:10px; margin:10px 0;}*/
+.graph-info-area { background-color:#fff; border:1px solid #dfdfdf; border-radius:5px; padding:10px; margin:10px 0;}
+
+.graph-info { color:#33a3a6; font-size:14px;}
+.graph-booklist { color:#3d3d3d; font-size:13px;}
+.graph-booklist li { padding-top:5px;}
+
+.btn-month-area { width:300px; margin:0 auto; padding:10px 0;}
+.btn-month-area:after { display:block; clear:both; content:"";} 
+.btn-month-area li { float:left; width:25%; text-align:center; cursor:pointer;}
+.btn-month-area li .btn-month { display:inline-block; width:45px; height:45px; background-color:#c4c4c4; border-radius:3px; color:#fff; font-size:14px; line-height:45px; text-align:center; margin:5px 0;}
+.btn-month-area li.month-on .btn-month { background-color:#b4d853; }
+.all-reading-count { border-bottom:1px solid #dfdfdf; padding-bottom:8px; margin-bottom:8px;}
+/* m04 */
+
+
+
+/* m05 */
+.interest-booklist-area { margin:10px;}
+.interest-booklist-header { position:relative; background-color:#fff; padding:10px; border:1px solid #dfdfdf; border-bottom:none; border-radius:5px 5px 0 0;}
+.interest-booklist-header h3 { color:#4596cf;}
+.interest-select { position:absolute; right:5px; top:6px;}
+.interest-select .ui-select { display:inline-block; width:100px; margin:0;}
+.interest-select .ui-select select { width:100%;}
+.interest-booklist {background-color:#fff; border-top:1px solid #dfdfdf; border-right:1px solid #dfdfdf;}
+.interest-booklist:after { display:block; clear:both; content:"";}
+.interest-booklist li { position:relative; float:left; width:33.33%; border-bottom:1px solid #dfdfdf;}
+.interest-booklist li:last-child:after { display:block; clear:both; content:""; position:absolute; right:-1px; top:0; width:1px; height:100%; border-right:1px solid #dfdfdf; margin-left:1px;}
+.interest-booklist li .reading-book-box { border-left:1px solid #dfdfdf; padding:10px;}
+
+/* m05 */
+
+
+
+
+
+
+

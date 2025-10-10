@@ -1,33 +1,40 @@
-# --- Flutter ---
-/.dart_tool/
-/.buildlog/
-/build/
-/pubspec.lock
-/android/.gradle/
-/android/.idea/
-/ios/Pods/
-/linux/flutter/
-/macos/Flutter/ephemeral/
-/windows/flutter/
-/web/.dart_tool/
-/**/*.lock
-
-# --- IDE ---
-/.vscode/
-/.idea/
-/*.code-workspace
-
-# --- OS ---
+# OS/IDE
 .DS_Store
 Thumbs.db
+.vscode/
+.idea/
 
-# --- PHP(Admin) ---
-/vendor/
-/node_modules/
-/composer.lock
-.env
-.env.*
-/cache/
-/storage/
-/dist/
-/uploads/
+# Flutter/Dart
+.dart_tool/
+.packages
+.pub-cache/
+.flutter-plugins
+.flutter-plugins-dependencies
+.melos_tool/
+
+# Builds
+build/
+dist/
+
+# Android
+android/local.properties
+android/.gradle/
+android/.cxx/
+**/*.keystore
+**/*.jks
+android/key.properties
+android/app/google-services.json
+
+# iOS
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Flutter/Generated.xcconfig
+ios/Runner/GoogleService-Info.plist
+
+# Logs
+*.log
+
+# Env
+*.env
