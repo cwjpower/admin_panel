@@ -1,4 +1,5 @@
 # OS/IDE
+<<<<<<< HEAD
 Thumbs.db
 .DS_Store
 .vscode/
@@ -27,3 +28,47 @@ build/
 uploads/
 upload/
 static/uploads/
+=======
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Flutter/Dart
+.dart_tool/
+.packages
+.pub-cache/
+.flutter-plugins
+.flutter-plugins-dependencies
+.melos_tool/
+
+# Builds
+build/
+dist/
+
+# Android
+android/local.properties
+android/.gradle/
+android/.cxx/
+**/*.keystore
+**/*.jks
+android/key.properties
+android/app/google-services.json
+
+# iOS
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Flutter/Generated.xcconfig
+ios/Runner/GoogleService-Info.plist
+
+# Logs
+*.log
+
+# Env
+*.env
+
+_tmp_extract/
+
+>>>>>>> 8eb8971e98e73f8efd5ae1c59b00f3779f36b186

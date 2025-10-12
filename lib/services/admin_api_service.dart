@@ -1,471 +1,229 @@
+// lib/services/api_service.dart
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
+import '../models/series.dart';
+import '../models/volume.dart';
 
-class AdminApiService {
-  // 서버 주소
+class ApiService {
   static const String baseUrl = 'http://34.64.84.117:8081/admin/apis';
 
-  /// 어드민 로그인
-  static Future<Map<String, dynamic>> login(String email, String password) async {
+  // ============================================
+  // 로그인 관련 API
+  // ============================================
+
+  /// 로그인
+  static Future<Map<String, dynamic>> login({
+    required String email,
+    required String password,
+  }) async {
     try {
+      final url = '$baseUrl/users/user_login_clean.php';
+      print('Login attempt: $url');
+
       final response = await http.post(
-        Uri.parse('$baseUrl/users/admin_login.php'),
+        Uri.parse(url),
         body: {
-          'email': email,
-          'password': password,
+          'user_login': email,
+          'user_pass': password,
         },
       );
 
-      print('Login Response Status: ${response.statusCode}');
-      print('Login Response Body: ${response.body}');
+      print('Login response status: ${response.statusCode}');
+      print('Login response body: ${response.body}');
 
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
+        final jsonData = json.decode(response.body);
 
-        if (data['code'] == 0) {
-          // 로그인 성공 - 토큰과 어드민 정보 저장
-          await _saveToken(data['token']);
-          await _saveAdminInfo(data['admin']);
+        if (jsonData['code'] == 0) {
+          // 로그인 성공
+          return {
+            'success': true,
+            'token': jsonData['token'],
+            'uid': jsonData['uid'],
+            'user_name': jsonData['user_name'],
+            'display_name': jsonData['display_name'],
+            'user_level': jsonData['user_level'],
+          };
+        } else {
+          // 로그인 실패
+          return {
+            'success': false,
+            'message': jsonData['msg'] ?? 'Login failed'
+          };
         }
-
-        return data;
       } else {
         return {
-          'code': 1,
-          'msg': '서버 오류: ${response.statusCode}',
+          'success': false,
+          'message': 'Server error: ${response.statusCode}'
         };
       }
     } catch (e) {
-      print('Login Error: $e');
+      print('Login error: $e');
       return {
-        'code': 1,
-        'msg': '네트워크 오류: $e',
+        'success': false,
+        'message': 'Network error: $e'
       };
     }
   }
 
-  /// 토큰 저장
-  static Future<void> _saveToken(String token) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('admin_token', token);
-    print('Token saved: $token');
-  }
-
-  /// 어드민 정보 저장 (권한 시스템 포함)
-  static Future<void> _saveAdminInfo(Map<String, dynamic> admin) async {
-    final prefs = await SharedPreferences.getInstance();
-
-    // 기본 정보
-    await prefs.setString('admin_uid', admin['uid'].toString());
-    await prefs.setString('admin_email', admin['email'] ?? '');
-    await prefs.setString('admin_name', admin['name'] ?? '');
-    await prefs.setString('admin_level', admin['level'].toString());
-    await prefs.setString('admin_permission', admin['permission'] ?? '');
-    await prefs.setString('admin_role', admin['role'] ?? '');
-
-    // 출판사 정보 (출판사 어드민인 경우)
-    if (admin['publisher'] != null) {
-      await prefs.setString('publisher_id', admin['publisher']['id'].toString());
-      await prefs.setString('publisher_name', admin['publisher']['name'] ?? '');
-      await prefs.setString('publisher_code', admin['publisher']['code'] ?? '');
-      print('Publisher info saved: ${admin['publisher']}');
-    } else {
-      // 슈퍼 어드민이면 출판사 정보 삭제
-      await prefs.remove('publisher_id');
-      await prefs.remove('publisher_name');
-      await prefs.remove('publisher_code');
-    }
-
-    print('Admin info saved: $admin');
-  }
-
-  /// 토큰 가져오기
-  static Future<String?> getToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('admin_token');
-  }
-
-  /// 어드민 정보 가져오기 (권한 포함)
-  static Future<Map<String, String?>> getAdminInfo() async {
-    final prefs = await SharedPreferences.getInstance();
-    return {
-      'uid': prefs.getString('admin_uid'),
-      'email': prefs.getString('admin_email'),
-      'name': prefs.getString('admin_name'),
-      'level': prefs.getString('admin_level'),
-      'permission': prefs.getString('admin_permission'),
-      'role': prefs.getString('admin_role'),
-      'publisher_id': prefs.getString('publisher_id'),
-      'publisher_name': prefs.getString('publisher_name'),
-      'publisher_code': prefs.getString('publisher_code'),
-    };
-  }
-
-  /// 권한 확인
-  static Future<bool> isSuperAdmin() async {
-    final info = await getAdminInfo();
-    return info['permission'] == 'super_admin';
-  }
-
-  /// 출판사 어드민 여부 확인
-  static Future<bool> isPublisherAdmin() async {
-    final info = await getAdminInfo();
-    return info['permission'] == 'publisher_admin';
-  }
-
-  /// 출판사 ID 가져오기
-  static Future<int?> getPublisherId() async {
-    final info = await getAdminInfo();
-    final publisherId = info['publisher_id'];
-    return publisherId != null ? int.tryParse(publisherId) : null;
-  }
-
-  /// 로그인 여부 확인
-  static Future<bool> isLoggedIn() async {
-    final token = await getToken();
-    return token != null && token.isNotEmpty;
-  }
-
-  /// 로그아웃 (모든 정보 삭제)
-  static Future<void> logout() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('admin_token');
-    await prefs.remove('admin_uid');
-    await prefs.remove('admin_email');
-    await prefs.remove('admin_name');
-    await prefs.remove('admin_level');
-    await prefs.remove('admin_permission');
-    await prefs.remove('admin_role');
-    await prefs.remove('publisher_id');
-    await prefs.remove('publisher_name');
-    await prefs.remove('publisher_code');
-    print('Logged out - all data cleared');
-  }
-
-  /// API 요청 헤더 (토큰 포함)
-  static Future<Map<String, String>> getHeaders() async {
-    final token = await getToken();
-    return {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ${token ?? ''}',
-    };
-  }
-
-  /// GET 요청 (공통)
-  static Future<Map<String, dynamic>> get(String endpoint) async {
-    try {
-      final headers = await getHeaders();
-      final response = await http.get(
-        Uri.parse('$baseUrl/$endpoint'),
-        headers: headers,
-      );
-
-      print('GET $endpoint - Status: ${response.statusCode}');
-      print('Response: ${response.body}');
-
-      if (response.statusCode == 200) {
-        return json.decode(response.body);
-      } else {
-        return {
-          'code': 1,
-          'msg': '서버 오류: ${response.statusCode}',
-        };
-      }
-    } catch (e) {
-      print('GET Error: $e');
-      return {
-        'code': 1,
-        'msg': '네트워크 오류: $e',
-      };
-    }
-  }
-
-  /// POST 요청 (공통)
-  static Future<Map<String, dynamic>> post(
-      String endpoint,
-      Map<String, dynamic> data,
-      ) async {
-    try {
-      final token = await getToken();
-      final response = await http.post(
-        Uri.parse('$baseUrl/$endpoint'),
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Authorization': 'Bearer ${token ?? ''}',
-        },
-        body: data,
-      );
-
-      print('POST $endpoint - Status: ${response.statusCode}');
-      print('Response: ${response.body}');
-
-      if (response.statusCode == 200) {
-        return json.decode(response.body);
-      } else {
-        return {
-          'code': 1,
-          'msg': '서버 오류: ${response.statusCode}',
-        };
-      }
-    } catch (e) {
-      print('POST Error: $e');
-      return {
-        'code': 1,
-        'msg': '네트워크 오류: $e',
-      };
-    }
-  }
-
-  // ========== 대시보드 API ==========
-
-  /// 대시보드 통계 조회
-  static Future<Map<String, dynamic>> getDashboardStats() async {
-    return await get('admin/dashboard.php');
-  }
-
-  // ========== 출판사 관리 API (슈퍼 어드민 전용) ==========
-
-  /// 출판사 목록 조회
-  static Future<Map<String, dynamic>> getPublishersList() async {
-    return await get('publishers/list.php');
-  }
-
-  /// 출판사 승인
-  static Future<Map<String, dynamic>> approvePublisher(int publisherId) async {
-    return await post('publishers/approve.php', {'publisher_id': publisherId.toString()});
-  }
-
-  // ========== 책 관리 API ==========
-
-  /// 책 목록 조회
-  static Future<Map<String, dynamic>> getBooksList({
-    int page = 1,
-    int limit = 20,
-  }) async {
-    return await get('books/admin_list.php?page=$page&limit=$limit');
-  }
-
-  /// 책 추가
-  static Future<Map<String, dynamic>> addBook(Map<String, dynamic> bookData) async {
-    return await post('books/add.php', bookData);
-  }
-
-  /// 책 수정
-  static Future<Map<String, dynamic>> updateBook(String bookId, Map<String, dynamic> bookData) async {
-    bookData['book_id'] = bookId;
-    return await post('books/update.php', bookData);
-  }
-
-  /// 책 삭제
-  static Future<Map<String, dynamic>> deleteBook(String bookId) async {
-    return await post('books/delete.php', {'book_id': bookId});
-  }
-
-  // ========== 회원 관리 API ==========
-
-  /// 회원 목록 조회
-  static Future<Map<String, dynamic>> getUsersList({
-    int page = 1,
-    int limit = 20,
-  }) async {
-    return await get('users/admin_list.php?page=$page&limit=$limit');
-  }
-
-  /// 회원 상태 변경
-  static Future<Map<String, dynamic>> updateUserStatus(String userId, int status) async {
-    return await post('users/update_status.php', {
-      'user_id': userId,
-      'status': status.toString(),
-    });
-  }
-
-  // ========== 배너 관리 API ==========
-
-  /// 배너 목록 조회
-  static Future<Map<String, dynamic>> getBannersList() async {
-    return await get('home/banners_admin.php');
-  }
-
-  /// 배너 추가
-  static Future<Map<String, dynamic>> addBanner(Map<String, dynamic> bannerData) async {
-    return await post('home/add_banner.php', bannerData);
-  }
-
-  /// 배너 삭제
-  static Future<Map<String, dynamic>> deleteBanner(String bannerId) async {
-    return await post('home/delete_banner.php', {'banner_id': bannerId});
-  }
-
-  // ========== 뉴스/공지 관리 API ==========
-
-  /// 뉴스 목록 조회
-  static Future<Map<String, dynamic>> getNewsList({
-    int page = 1,
-    int limit = 20,
-  }) async {
-    return await get('posts/admin_news_list.php?page=$page&limit=$limit');
-  }
-
-  /// 뉴스 추가
-  static Future<Map<String, dynamic>> addNews(Map<String, dynamic> newsData) async {
-    return await post('posts/add_news.php', newsData);
-  }
-
-  /// 뉴스 삭제
-  static Future<Map<String, dynamic>> deleteNews(String newsId) async {
-    return await post('posts/delete_news.php', {'news_id': newsId});
-  }
-
-  // ========== 시리즈 관리 API ==========
+  // ============================================
+  // 시리즈 관련 API
+  // ============================================
 
   /// 시리즈 목록 조회
-  static Future<Map<String, dynamic>> getSeriesList({
-    String? category,
-    String? status,
-    String? search,
+  /// category: 'all', 'marvel', 'dc', 'image' 등
+  static Future<Map<String, dynamic>> fetchSeriesList({
+    String category = 'all',
+    int page = 1,
+    int limit = 20,
   }) async {
-    String endpoint = 'series/list.php?';
+    try {
+      final url = '$baseUrl/books/series_list.php?category=$category&page=$page&limit=$limit';
+      print('Fetching series list: $url');
 
-    if (category != null && category.isNotEmpty) {
-      endpoint += 'category=$category&';
-    }
-    if (status != null && status.isNotEmpty) {
-      endpoint += 'status=$status&';
-    }
-    if (search != null && search.isNotEmpty) {
-      endpoint += 'search=$search&';
-    }
+      final response = await http.get(Uri.parse(url));
 
-    return await get(endpoint);
+      print('Series list response status: ${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+
+        if (jsonData['code'] == 0) {
+          final List<dynamic> seriesJson = jsonData['data']['series'];
+          final List<Series> seriesList = seriesJson
+              .map((json) => Series.fromJson(json))
+              .toList();
+
+          print('Loaded ${seriesList.length} series');
+
+          return {
+            'success': true,
+            'series': seriesList,
+            'pagination': jsonData['data']['pagination'],
+          };
+        } else {
+          return {
+            'success': false,
+            'message': jsonData['msg'] ?? 'Unknown error'
+          };
+        }
+      } else {
+        return {
+          'success': false,
+          'message': 'Server error: ${response.statusCode}'
+        };
+      }
+    } catch (e) {
+      print('Error fetching series list: $e');
+      return {
+        'success': false,
+        'message': 'Network error: $e'
+      };
+    }
   }
 
-  /// 시리즈 추가
-  static Future<Map<String, dynamic>> addSeries({
-    required String seriesName,
-    String? seriesNameEn,
-    String? author,
-    required String category,
-    String? description,
-    String? coverImage,
-    String? status,
-    int? publisherId,
-  }) async {
-    final data = <String, String>{
-      'series_name': seriesName,
-      'category': category,
-    };
+  /// 시리즈 상세 조회 (권 목록 포함)
+  static Future<Map<String, dynamic>> fetchSeriesDetail(int seriesId) async {
+    try {
+      final url = '$baseUrl/books/series_detail.php?series_id=$seriesId';
+      print('Fetching series detail: $url');
 
-    if (seriesNameEn != null) data['series_name_en'] = seriesNameEn;
-    if (author != null) data['author'] = author;
-    if (description != null) data['description'] = description;
-    if (coverImage != null) data['cover_image'] = coverImage;
-    if (status != null) data['status'] = status;
-    if (publisherId != null) data['publisher_id'] = publisherId.toString();
+      final response = await http.get(Uri.parse(url));
 
-    return await post('series/add.php', data);
-  }
+      print('Series detail response status: ${response.statusCode}');
 
-  /// 시리즈 수정
-  static Future<Map<String, dynamic>> updateSeries({
-    required int seriesId,
-    String? seriesName,
-    String? seriesNameEn,
-    String? author,
-    String? category,
-    String? description,
-    String? coverImage,
-    String? status,
-    int? totalVolumes,
-  }) async {
-    final data = <String, String>{'series_id': seriesId.toString()};
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
 
-    if (seriesName != null) data['series_name'] = seriesName;
-    if (seriesNameEn != null) data['series_name_en'] = seriesNameEn;
-    if (author != null) data['author'] = author;
-    if (category != null) data['category'] = category;
-    if (description != null) data['description'] = description;
-    if (coverImage != null) data['cover_image'] = coverImage;
-    if (status != null) data['status'] = status;
-    if (totalVolumes != null) data['total_volumes'] = totalVolumes.toString();
+        if (jsonData['code'] == 0) {
+          final Series series = Series.fromJson(jsonData['data']['series']);
 
-    return await post('series/update.php', data);
-  }
+          final List<dynamic> volumesJson = jsonData['data']['volumes'];
+          final List<Volume> volumes = volumesJson
+              .map((json) => Volume.fromJson(json))
+              .toList();
 
-  // ========== 권 관리 API ==========
+          print('Loaded series: ${series.seriesName} with ${volumes.length} volumes');
 
-  /// 권 목록 조회
-  static Future<Map<String, dynamic>> getVolumesList({
-    int? seriesId,
-    String? status,
-    int? isFree,
-  }) async {
-    String endpoint = 'volumes/list.php?';
-
-    if (seriesId != null) {
-      endpoint += 'series_id=$seriesId&';
+          return {
+            'success': true,
+            'series': series,
+            'volumes': volumes,
+            'stats': jsonData['data']['stats'],
+          };
+        } else {
+          return {
+            'success': false,
+            'message': jsonData['msg'] ?? 'Unknown error'
+          };
+        }
+      } else {
+        return {
+          'success': false,
+          'message': 'Server error: ${response.statusCode}'
+        };
+      }
+    } catch (e) {
+      print('Error fetching series detail: $e');
+      return {
+        'success': false,
+        'message': 'Network error: $e'
+      };
     }
-    if (status != null && status.isNotEmpty) {
-      endpoint += 'status=$status&';
-    }
-    if (isFree != null) {
-      endpoint += 'is_free=$isFree&';
-    }
-
-    return await get(endpoint);
   }
 
-  /// 권 추가
-  static Future<Map<String, dynamic>> addVolume({
-    required int seriesId,
-    required int volumeNumber,
-    String? volumeTitle,
-    String? coverImage,
-    double? price,
-    bool? isFree,
-    int? totalPages,
-    String? publishDate,
-    String? status,
-    int? publisherId,
-  }) async {
-    final data = <String, String>{
-      'series_id': seriesId.toString(),
-      'volume_number': volumeNumber.toString(),
-    };
+  /// 권 상세 조회
+  static Future<Map<String, dynamic>> fetchVolumeDetail(int volumeId) async {
+    try {
+      final url = '$baseUrl/books/volume_detail.php?volume_id=$volumeId';
+      print('Fetching volume detail: $url');
 
-    if (volumeTitle != null) data['volume_title'] = volumeTitle;
-    if (coverImage != null) data['cover_image'] = coverImage;
-    if (price != null) data['price'] = price.toString();
-    if (isFree != null) data['is_free'] = (isFree ? '1' : '0');
-    if (totalPages != null) data['total_pages'] = totalPages.toString();
-    if (publishDate != null) data['publish_date'] = publishDate;
-    if (status != null) data['status'] = status;
-    if (publisherId != null) data['publisher_id'] = publisherId.toString();
+      final response = await http.get(Uri.parse(url));
 
-    return await post('volumes/add.php', data);
+      print('Volume detail response status: ${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+
+        if (jsonData['code'] == 0) {
+          final Volume volume = Volume.fromJson(jsonData['data']['volume']);
+
+          print('Loaded volume: ${volume.volumeTitle}');
+
+          return {
+            'success': true,
+            'volume': volume,
+          };
+        } else {
+          return {
+            'success': false,
+            'message': jsonData['msg'] ?? 'Unknown error'
+          };
+        }
+      } else {
+        return {
+          'success': false,
+          'message': 'Server error: ${response.statusCode}'
+        };
+      }
+    } catch (e) {
+      print('Error fetching volume detail: $e');
+      return {
+        'success': false,
+        'message': 'Network error: $e'
+      };
+    }
   }
 
-  /// 권 수정
-  static Future<Map<String, dynamic>> updateVolume({
-    required int volumeId,
-    String? volumeTitle,
-    String? coverImage,
-    double? price,
-    bool? isFree,
-    int? totalPages,
-    String? publishDate,
-    String? status,
-  }) async {
-    final data = <String, String>{'volume_id': volumeId.toString()};
+  // ============================================
+  // 기타 유틸리티
+  // ============================================
 
-    if (volumeTitle != null) data['volume_title'] = volumeTitle;
-    if (coverImage != null) data['cover_image'] = coverImage;
-    if (price != null) data['price'] = price.toString();
-    if (isFree != null) data['is_free'] = (isFree ? '1' : '0');
-    if (totalPages != null) data['total_pages'] = totalPages.toString();
-    if (publishDate != null) data['publish_date'] = publishDate;
-    if (status != null) data['status'] = status;
-
-    return await post('volumes/update.php', data);
+  /// 가격 포맷팅
+  static String formatPrice(int price) {
+    return '₩${price.toString().replaceAllMapped(
+        RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+            (Match m) => '${m[1]},'
+    )}';
   }
 }

@@ -1,0 +1,313 @@
+import 'package:flutter/material.dart';
+import '../services/admin_api_service.dart';
+import 'book_upload_screens.dart'; // VolumeManageScreen이 여기 있음!
+
+class AllBooksManageScreen extends StatefulWidget {
+  const AllBooksManageScreen({Key? key}) : super(key: key);
+
+  @override
+  State<AllBooksManageScreen> createState() => _AllBooksManageScreenState();
+}
+
+class _AllBooksManageScreenState extends State<AllBooksManageScreen> {
+  List<dynamic> _seriesList = [];
+  Map<String, dynamic> _stats = {};
+  bool _isLoading = true;
+
+  // 필터
+  String _searchQuery = '';
+  String? _selectedPublisherId;
+  String? _selectedCategory;
+  String? _selectedStatus;
+
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSeriesList();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadSeriesList() async {
+    setState(() => _isLoading = true);
+
+    try {
+      final result = await AdminApiService.getAllSeries(
+        search: _searchQuery.isNotEmpty ? _searchQuery : null,
+        publisherId: _selectedPublisherId,
+        category: _selectedCategory,
+        status: _selectedStatus,
+      );
+
+      setState(() {
+        _seriesList = result['data'] ?? [];
+        _stats = result['stats'] ?? {};
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() => _isLoading = false);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('데이터 로드 실패: $e')),
+        );
+      }
+    }
+  }
+
+  void _clearFilters() {
+    setState(() {
+      _searchQuery = '';
+      _searchController.clear();
+      _selectedPublisherId = null;
+      _selectedCategory = null;
+      _selectedStatus = null;
+    });
+    _loadSeriesList();
+  }
+
+  // 시리즈 클릭 시 권 관리 화면으로 이동
+  void _navigateToVolumeManage(Map<String, dynamic> series) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            VolumeManageScreen(
+              series: series,
+            ),
+      ),
+    ).then((_) => _loadSeriesList());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.grey[100],
+      appBar: AppBar(
+        title: const Text('전체 책 관리'),
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        elevation: 0,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: _loadSeriesList,
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          _buildStatsBox(),
+          _buildSearchBar(),
+          _buildFilterChips(),
+          Expanded(
+            child: _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : _seriesList.isEmpty
+                ? const Center(child: Text('시리즈가 없습니다'))
+                : RefreshIndicator(
+              onRefresh: _loadSeriesList,
+              child: GridView.builder(
+                padding: const EdgeInsets.all(16),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 0.7,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                ),
+                itemCount: _seriesList.length,
+                itemBuilder: (context, index) {
+                  return _buildSeriesCard(_seriesList[index]);
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatsBox() {
+    return Container(
+      color: Colors.white,
+      padding: const EdgeInsets.all(16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          _buildStatItem(
+              '총 시리즈', '${_stats['total_series'] ?? 0}', Icons.library_books,
+              Colors.blue),
+          _buildStatItem('총 권수', '${_stats['total_volumes'] ?? 0}', Icons.book,
+              Colors.green),
+          _buildStatItem(
+              '출판사', '${_stats['total_publishers'] ?? 0}', Icons.business,
+              Colors.orange),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatItem(String label, String value, IconData icon,
+      Color color) {
+    return Column(
+      children: [
+        Icon(icon, color: color, size: 32),
+        const SizedBox(height: 8),
+        Text(value, style: TextStyle(
+            fontSize: 24, fontWeight: FontWeight.bold, color: color)),
+        Text(label, style: TextStyle(fontSize: 12, color: Colors.grey[600])),
+      ],
+    );
+  }
+
+  Widget _buildSearchBar() {
+    return Container(
+      color: Colors.white,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: TextField(
+        controller: _searchController,
+        decoration: InputDecoration(
+          hintText: '시리즈명, 코드, 출판사 검색...',
+          prefixIcon: const Icon(Icons.search),
+          suffixIcon: _searchQuery.isNotEmpty
+              ? IconButton(
+            icon: const Icon(Icons.clear),
+            onPressed: () {
+              _searchController.clear();
+              setState(() => _searchQuery = '');
+              _loadSeriesList();
+            },
+          )
+              : null,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none),
+          filled: true,
+          fillColor: Colors.grey[100],
+        ),
+        onSubmitted: (value) {
+          setState(() => _searchQuery = value);
+          _loadSeriesList();
+        },
+      ),
+    );
+  }
+
+  Widget _buildFilterChips() {
+    bool hasFilters = _selectedPublisherId != null ||
+        _selectedCategory != null || _selectedStatus != null;
+    if (!hasFilters) return const SizedBox.shrink();
+
+    return Container(
+      color: Colors.white,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Wrap(
+        spacing: 8,
+        children: [
+          if (_selectedPublisherId != null)
+            Chip(label: const Text('출판사 필터'), onDeleted: () {
+              setState(() => _selectedPublisherId = null);
+              _loadSeriesList();
+            }),
+          if (_selectedCategory != null)
+            Chip(label: Text(_selectedCategory!), onDeleted: () {
+              setState(() => _selectedCategory = null);
+              _loadSeriesList();
+            }),
+          if (_selectedStatus != null)
+            Chip(label: Text(_selectedStatus == 'ongoing' ? '연재중' : '완결'),
+                onDeleted: () {
+                  setState(() => _selectedStatus = null);
+                  _loadSeriesList();
+                }),
+          TextButton.icon(icon: const Icon(Icons.clear_all, size: 16),
+              label: const Text('전체 해제'),
+              onPressed: _clearFilters),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSeriesCard(Map<String, dynamic> series) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: () => _navigateToVolumeManage(series),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(12)),
+                  image: series['cover_url'] != null
+                      ? DecorationImage(
+                      image: NetworkImage(series['cover_url']),
+                      fit: BoxFit.cover)
+                      : null,
+                ),
+                child: series['cover_url'] == null
+                    ? const Center(
+                    child: Icon(Icons.book, size: 48, color: Colors.grey))
+                    : null,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    series['series_title'] ?? '',
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 14),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(series['publisher_name'] ?? '',
+                      style: TextStyle(fontSize: 12, color: Colors.grey[600])),
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('${series['volume_count'] ?? 0}권',
+                          style: TextStyle(fontSize: 12,
+                              color: Colors.blue[700],
+                              fontWeight: FontWeight.bold)),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: series['status'] == 'ongoing' ? Colors
+                              .green[50] : Colors.grey[200],
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          series['status'] == 'ongoing' ? '연재중' : '완결',
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: series['status'] == 'ongoing' ? Colors
+                                .green[700] : Colors.grey[600],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
