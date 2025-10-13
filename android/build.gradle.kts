@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 allprojects {
     repositories {
         google()
@@ -20,7 +19,6 @@ subprojects {
 tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
 }
-=======
 allprojects {
     repositories {
         google()
@@ -42,4 +40,4 @@ subprojects {
 tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
 }
->>>>>>> 9084b6b (chore: initial commit (herocomics_app))
+

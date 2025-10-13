@@ -1,7 +1,6 @@
 // lib/screens/home_screen.dart
 import 'package:flutter/material.dart';
 import '../models/series.dart';
-import '../models/banner.dart'; // ✅ 추가!
 import '../services/api_service.dart';
 import '../utils/colors.dart';
 import 'book_detail_screen.dart';
@@ -21,32 +20,10 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Series> _seriesList = [];
   String? _errorMessage;
 
-  // ✅ 배너 관련 상태 추가
-  bool _isLoadingBanners = true;
-  List<AppBanner> _banners = [];
-
   @override
   void initState() {
     super.initState();
     _loadSeries();
-    _loadBanners(); // ✅ 배너 로딩 추가
-  }
-
-  // ✅ 배너 로딩 함수 추가
-  Future<void> _loadBanners() async {
-    setState(() => _isLoadingBanners = true);
-
-    try {
-      final fetchedBanners = await ApiService.fetchBanners();
-      setState(() {
-        _banners = fetchedBanners;
-        _isLoadingBanners = false;
-      });
-      print('✅ 배너 ${_banners.length}개 로딩 완료!');
-    } catch (e) {
-      print('❌ 배너 로딩 실패: $e');
-      setState(() => _isLoadingBanners = false);
-    }
   }
 
   Future<void> _loadSeries() async {
@@ -140,12 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       body: RefreshIndicator(
-        onRefresh: () async {
-          await Future.wait([
-            _loadSeries(),
-            _loadBanners(), // ✅ 새로고침 시 배너도 다시 로딩
-          ]);
-        },
+        onRefresh: _loadSeries,
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           child: Column(
@@ -172,129 +144,52 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // ✅ 배너 섹션 수정 - 실제 API 데이터 사용
   Widget _buildBannerSection() {
-    // 로딩 중
-    if (_isLoadingBanners) {
-      return Container(
-        height: 200,
-        margin: const EdgeInsets.symmetric(horizontal: 16),
-        decoration: BoxDecoration(
-          color: Colors.grey.shade200,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: const Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
-    }
-
-    // 배너가 없을 때
-    if (_banners.isEmpty) {
-      return Container(
-        height: 200,
-        margin: const EdgeInsets.symmetric(horizontal: 16),
-        decoration: BoxDecoration(
-          color: Colors.grey.shade200,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: const Center(
-          child: Text('배너가 없습니다.'),
-        ),
-      );
-    }
-
-    // 실제 배너 표시
     return SizedBox(
       height: 200,
-      child: PageView.builder(
-        itemCount: _banners.length,
-        itemBuilder: (context, index) {
-          final banner = _banners[index];
-          return GestureDetector(
-            onTap: () {
-              print('배너 클릭: ${banner.title} -> ${banner.linkUrl}');
-              // TODO: banner.linkUrl로 이동
-            },
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 16),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: _getBannerGradient(index),
-                ),
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 8,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
+      child: PageView(
+        children: [
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.blue.shade700, Colors.blue.shade900],
               ),
-              child: Stack(
-                children: [
-                  // 배너 이미지 (나중에 추가)
-                  // if (banner.imageUrl.isNotEmpty)
-                  //   ClipRRect(
-                  //     borderRadius: BorderRadius.circular(12),
-                  //     child: Image.network(
-                  //       banner.getFullImageUrl(ApiService.baseUrl),
-                  //       width: double.infinity,
-                  //       height: double.infinity,
-                  //       fit: BoxFit.cover,
-                  //     ),
-                  //   ),
-
-                  // 배너 제목
-                  Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(
-                          Icons.image,
-                          size: 64,
-                          color: Colors.white70,
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          banner.title,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          'Order: ${banner.displayOrder}',
-                          style: const TextStyle(
-                            color: Colors.white70,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Center(
+              child: Text(
+                '신규 시리즈 할인 이벤트',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-          );
-        },
+          ),
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.red.shade700, Colors.red.shade900],
+              ),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Center(
+              child: Text(
+                'MARVEL 특별전',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
-  }
-
-  // 배너 그라디언트 색상 (순서에 따라 다른 색)
-  List<Color> _getBannerGradient(int index) {
-    final gradients = [
-      [Colors.blue.shade700, Colors.blue.shade900],
-      [Colors.red.shade700, Colors.red.shade900],
-      [Colors.purple.shade700, Colors.purple.shade900],
-      [Colors.green.shade700, Colors.green.shade900],
-      [Colors.orange.shade700, Colors.orange.shade900],
-    ];
-    return gradients[index % gradients.length];
   }
 
   Widget _buildNewsSection() {

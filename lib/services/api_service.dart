@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/series.dart';
 import '../models/volume.dart';
+import '../models/banner.dart';
 
 class ApiService {
   static const String baseUrl = 'http://34.64.84.117:8081/admin/apis';
@@ -182,6 +183,36 @@ class ApiService {
       return [];
     }
   }
+
+  // 배너 목록 가져오기
+  static Future<List<AppBanner>> fetchBanners() async {
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/banners/list.php'),
+      );
+
+      print('배너 API 응답 상태: ${response.statusCode}');
+      print('배너 API 응답: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonData = json.decode(response.body);
+
+        if (jsonData['success'] == true && jsonData['data'] != null) {
+          final List<dynamic> bannersJson = jsonData['data'];
+          return bannersJson.map((json) => AppBanner.fromJson(json)).toList();
+        } else {
+          throw Exception('배너 데이터를 불러올 수 없습니다.');
+        }
+      } else {
+        throw Exception('서버 오류: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('배너 로딩 에러: $e');
+      rethrow;
+    }
+  }
+
+
 
   static Future<List<dynamic>> getBanners() async {
     try {
