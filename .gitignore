@@ -43,7 +43,7 @@ Thumbs.db
 .melos_tool/
 
 # Builds
-build/
+# build/
 dist/
 
 # Android
